@@ -1,0 +1,180 @@
+ion-content {
+  --background: linear-gradient(90deg, #4dd0e1, #1e88e5);
+  --padding-start: 0;
+  --padding-end: 0;
+}
+
+.login-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  position: relative;
+}
+
+.logo-container {
+  flex: 0 0 30%; // Adjust this value to control the height of the blue area
+  display: flex;
+  flex-direction: column;
+  justify-content: center; // This centers vertically
+  align-items: center; // This centers horizontally
+  padding: 0; // Remove any padding
+  position: relative;
+  z-index: 1;
+
+  .logo {
+    width: 150px; // Adjust size as needed
+    height: auto;
+    margin-bottom: 1rem; // Space between logo and text
+  }
+
+}
+
+h1 {
+  color: #666;
+  font-size: 3rem;
+  font-weight: 700;
+  margin: 0;
+  text-align: center;
+}
+
+.form-container {
+  flex: 1;
+  background: white;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  margin-top: -50px; // Pull the form up to overlap with the logo area
+  margin-left: -20px;
+  margin-right: -20px;
+  width: calc(100% + 40px);
+  border-top-left-radius: 50% 100px;
+  border-top-right-radius: 50% 100px;
+  overflow: hidden;
+  padding-top: 3rem; // Increased top padding to move inputs lower
+  position: relative; // Add this
+
+  // Add these new styles for the circular elements
+  &::after {
+    content: '';
+    position: absolute;
+    background: linear-gradient(180deg, #fb8c00, #f6da26);
+    border-radius: 100%;
+  }
+
+  &::after {
+    width: 150px;
+    height: 150px;
+    bottom: -50px;
+    right: -40px;
+    opacity: 0.7;
+  }
+}
+
+ion-item {
+  --background: #e0e0e0; // Darker gray background
+  --border-color: transparent; // Remove default border
+  margin-bottom: 1rem;
+  border-radius: 5rem; // Increased border radius for more rounded corners
+  --border-radius: 25px; // For the inner input
+  --padding-start: 15px; // Add some padding inside the input
+  --padding-end: 15px;
+  --highlight-height: 0; // Remove the highlight effect
+  max-width: 85%; // Make inputs smaller
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 2rem;
+  --min-height: 50px;
+  height: 50px;  
+  font-weight: 700;
+
+  ion-icon {
+    margin-left: 5px;
+  }
+
+  &.item-has-focus {
+    --background: #d0d0d0; // Slightly darker when focused
+  }
+
+  ion-label {
+    color: #666; // Darker text for label
+    font-size: 0.9rem; // Smaller font size for labels
+  }
+
+  ion-input {
+    --padding-start: 10px;
+    --padding-end: 10px;
+    --padding-top: 8px; // Reduced vertical padding
+    --padding-bottom: 8px;
+    --placeholder-color: #999; // Lighter text for placeholder
+    --placeholder-opacity: 1;
+    font-size: 0.9rem; // Smaller font size for input text
+  }
+}
+
+.login-button {
+  margin-top: 5rem;
+  --background: linear-gradient(90deg, #f6da26, #fb8c00);
+  color: black;
+  --border-radius: 25px; // Circular edges
+  max-width: 85%;
+  margin-left: auto;
+  margin-right: auto;
+  height: 50px; // Match height with inputs
+  font-weight: 700;
+  font-size: 1.2rem;
+}
+
+.forgot-password {
+  text-align: center;
+  margin-top: 1rem;
+  color: #666;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.signup {
+  margin-top: 1rem;
+  text-align: center;
+  color: #666;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.circle {
+  position: absolute;
+  background: linear-gradient(180deg, #fb8c00, #f6da26);
+  border-radius: 50%;
+}
+
+.circle-1 {
+  width: 35px;
+  height: 35px;
+  bottom: 5%;
+  left: 50%;
+  opacity: 0.7;
+}
+
+.circle-2 {
+  width: 35px;
+  height: 35px;
+  bottom: 20%;
+  left: 3%;
+  opacity: 0.7;
+}
+
+.circle-3 {
+  width: 30px;
+  height: 30px;
+  top: 50%;
+  left: 92%;
+  opacity: 0.7;
+}
+
+.circle-4 {
+  width: 25px;
+  height: 25px;
+  top: 35%;
+  left: 5%;
+  opacity: 0.7;
+}
+
