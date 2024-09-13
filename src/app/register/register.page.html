@@ -1,0 +1,40 @@
+<ion-content>
+  <div class="register-container">
+    <div class="logo-container">
+      <img src="assets/img/school-bus.png" alt="School Bus" class="logo">
+    </div>
+    <div class="form-container">
+      <h1>Crear una cuenta</h1>
+      <form (ngSubmit)="onSubmit()">
+        <ion-label position="stacked">NOMBRE APODERADO</ion-label>
+        <ion-item>
+          <ion-input type="text" [(ngModel)]="nombreApoderado" name="nombreApoderado"></ion-input>
+        </ion-item>
+        <ion-label position="stacked">NOMBRE ALUMNO</ion-label>
+        <ion-item>
+          <ion-input type="text" [(ngModel)]="nombreAlumno" name="nombreAlumno"></ion-input>
+        </ion-item>
+        <ion-label position="stacked">SELECCIONA INSTITUTO EDUCACIONAL</ion-label>
+        <ion-item>
+          <ion-select [(ngModel)]="instituto" name="instituto">
+            <ion-select-option value="miroValle">Miro Valle</ion-select-option>
+            <!-- Add more options as needed -->
+          </ion-select>
+        </ion-item>
+        <ion-label position="stacked">TELEFONO</ion-label>
+        <ion-item>
+          <ion-input type="tel" [(ngModel)]="telefono" name="telefono"></ion-input>
+        </ion-item>
+        <ion-label position="stacked">EMAIL</ion-label>
+        <ion-item>
+          <ion-input type="email" [(ngModel)]="email" name="email"></ion-input>
+        </ion-item>
+        <ion-label position="stacked">CONTRASEÑA</ion-label>
+        <ion-item>
+          <ion-input type="password" [(ngModel)]="password" name="password"></ion-input>
+        </ion-item>
+        <ion-button expand="block" type="submit" class="register-button">Solicitar Registro</ion-button>
+      </form>
+    </div>
+  </div>
+</ion-content>

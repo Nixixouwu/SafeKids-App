@@ -1,0 +1,105 @@
+ion-content {
+  --background: linear-gradient(120deg, #4dd0e1, #1e3ce5);
+}
+
+.register-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding-top: 2vh; // 5% of viewport height
+}
+
+.logo-container {
+  flex: 0 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 15vh; // 15% of viewport height
+  max-height: 120px; // Maximum height
+
+  .logo {
+    width: auto;
+    height: 100%;
+    max-height: 120px;
+  }
+}
+
+form {
+    width: 80%;
+}
+
+h1 {
+  color: #fff;
+  font-size: 2.2rem; // You might keep this in rem for accessibility
+  font-weight: 700;
+  text-align: center;
+  margin-top: -0.5rem;
+  margin-bottom: 1rem;
+}
+
+.form-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.input-group {
+  margin-bottom: 1rem;
+  position: relative;
+}
+
+ion-label {
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: bold;
+  position: relative;
+  top: -0.3rem;
+  left: 0.5rem;
+  z-index: 1;
+}
+
+ion-item {
+  --background: rgba(255, 255, 255, 0.2);
+  --border-color: transparent;
+  margin-bottom: 1rem;
+  border-radius: 2rem;
+  --border-radius: 2rem;
+  --padding-start: 1rem;
+  --padding-end: 1rem;
+  --highlight-height: 0;
+  
+  &.item-has-focus {
+    --background: rgba(255, 255, 255, 0.3);
+  }
+
+  ion-input, ion-select {
+    --padding-top: 0.75rem;
+    --padding-bottom: 0.75rem;
+    --placeholder-color: rgba(255, 255, 255, 0.7);
+    --placeholder-opacity: 1;
+    color: #ffffff;
+    font-size: 1rem;
+
+  }
+}
+
+.register-button {
+  margin-top: 3rem;
+  --background: #ffffff;
+  --color: #1e3ce5;
+  --border-radius: 2rem;
+  font-weight: bold;
+  width: 100%; // Make button full width
+  height: 4rem;
+  font-size: 1.5rem;
+}
+
+// Add any additional styles specific to the register page
+
+ion-select::part(icon) {
+  color: white;
+  position: absolute;
+  right: 0;
+}
+
