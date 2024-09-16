@@ -2,13 +2,15 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonContent, IonHeader, IonTitle, IonToolbar, IonItem, IonIcon, IonLabel, IonSelect, IonSelectOption, IonButton } from '@ionic/angular/standalone';
-
+import { RouterModule } from '@angular/router';
+import { addIcons } from 'ionicons';
+import { arrowBackOutline } from 'ionicons/icons';
 @Component({
   selector: 'app-register',
   templateUrl: './register.page.html',
   styleUrls: ['./register.page.scss'],
   standalone: true,
-  imports: [IonButton, IonLabel, IonIcon, IonItem, IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, IonSelect, IonSelectOption]
+  imports: [IonButton, IonLabel, IonIcon, IonItem, IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, IonSelect, IonSelectOption, RouterModule]
 })
 export class RegisterPage implements OnInit {
 
@@ -24,7 +26,9 @@ export class RegisterPage implements OnInit {
     console.log('Register submitted', this.nombreApoderado, this.nombreAlumno, this.instituto, this.telefono, this.email, this.password);
   }
 
-  constructor() { }
+  constructor() { 
+    addIcons({ arrowBackOutline });
+  }
 
   ngOnInit() {
   }

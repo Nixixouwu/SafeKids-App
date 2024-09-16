@@ -5,6 +5,10 @@ ion-content {
 }
 
 .login-container {
+  position: relative;
+  overflow: hidden;
+  width: 100vw;
+  height: 100vh;
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -124,6 +128,7 @@ ion-item {
   height: 50px; // Match height with inputs
   font-weight: 700;
   font-size: 1.2rem;
+
 }
 
 .forgot-password {
@@ -140,43 +145,59 @@ ion-item {
   color: #666;
   font-size: 0.9rem;
   font-weight: 700;
+  z-index: 2;
+
+  a {
+    color: #666; // Change this to match the text color
+    text-decoration: none; // Remove underline
+    font-weight: 700; // Keep it bold
+
+    &:hover {
+      text-decoration: underline; // Optional: add underline on hover
+    }
+  }
 }
 
 .circle {
   position: absolute;
   background: linear-gradient(180deg, #fb8c00, #f6da26);
   border-radius: 50%;
+  z-index: 1;
 }
 
 .circle-1 {
   width: 35px;
   height: 35px;
-  bottom: 5%;
-  left: 50%;
+  bottom: 3vh;
+  left: 50vw;
   opacity: 0.7;
+  z-index: 1;
 }
 
 .circle-2 {
-  width: 35px;
-  height: 35px;
-  bottom: 20%;
-  left: 3%;
+  width: 20px;
+  height: 20px;
+  bottom: 20vh;
+  left: 3vw;
   opacity: 0.7;
+  z-index: 1;
 }
 
 .circle-3 {
   width: 30px;
   height: 30px;
-  top: 50%;
-  left: 92%;
+  top: 50vh;
+  right: 2vw;
   opacity: 0.7;
+  z-index: 1;
 }
 
 .circle-4 {
   width: 25px;
   height: 25px;
-  top: 35%;
-  left: 5%;
+  top: 35vh;
+  left: 3vw;
   opacity: 0.7;
+  z-index: 1;
 }
 

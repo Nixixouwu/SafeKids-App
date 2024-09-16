@@ -85,7 +85,8 @@ ion-item {
 }
 
 .register-button {
-  margin-top: 3rem;
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
   --background: #ffffff;
   --color: #1e3ce5;
   --border-radius: 2rem;
@@ -101,5 +102,20 @@ ion-select::part(icon) {
   color: white;
   position: absolute;
   right: 0;
+}
+
+.return-button {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 1000;
+  --color: #ffffff;
+  --background: transparent;
+  --padding-start: 0;
+  --padding-end: 0;
+
+  ion-icon {
+    font-size: 3rem;
+  }
 }
 
