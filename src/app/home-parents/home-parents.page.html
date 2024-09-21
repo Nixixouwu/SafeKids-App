@@ -1,0 +1,54 @@
+<ion-content>
+  <h1 class="app-title">SafeKIDS</h1>
+  
+  <div class="white-container">
+    <div class="parent-info">
+      <div class="parent-image">
+        <img [src]="parentImageUrl" alt="Parent's photo">
+      </div>
+      <div class="parent-details">
+        <span class="label">Apoderado</span>
+        <div class="details-content">
+          <h2 class="name">Macarena Silva</h2>
+          <button class="edit-image-btn" (click)="editImage()">Editar Imagen 📝</button>
+        </div>
+      </div>
+    </div>
+
+    <h3 class="title-students">Estudiantes</h3>
+    <div class="students-container">
+      <div class="student">
+        <img src="assets/img/avatar-default.png" alt="Jorge Muñoz">
+        <span class="name">Jorge Muñoz</span>
+      </div>
+      <div class="student">
+        <img src="assets/img/avatar-default.png" alt="Alejandro Muñoz">
+        <span class="name">Alejandro Muñoz</span>
+      </div>
+      
+      
+    </div>
+    <h3 class="title-bus">Viajes en Curso</h3>
+    <div class="bus-info-container">
+  
+      <div class="bus-info">
+        <ion-icon name="bus"></ion-icon>
+        <div class="bus-details">
+          <h4>Jorge Muñoz</h4>
+          <p><span class="bus-code">JX PZ 29</span> - Carlos Valdez</p>
+        </div>
+      </div>
+      <div class="bus-info">
+        <ion-icon name="bus"></ion-icon>
+        <div class="bus-details">
+          <h4>Alejandro Muñoz</h4>
+        <p><span class="bus-code">CV RZ 12</span> - Juan Valdez</p>
+      </div>
+      </div>
+      
+    
+      
+    </div>
+  </div>
+</ion-content>
+
