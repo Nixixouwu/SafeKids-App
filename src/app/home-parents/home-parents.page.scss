@@ -160,3 +160,18 @@ ion-content {
       }
     }
 }
+
+.return-button {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 1000;
+  --color: #ffffff;
+  --background: transparent;
+  --padding-start: 0;
+  --padding-end: 0;
+
+  ion-icon {
+    font-size: 3rem;
+  }
+}

@@ -21,10 +21,9 @@ export const routes: Routes = [
     path: '',
     redirectTo: 'login',
     pathMatch: 'full'
-  },  {
+  },
+  {
     path: 'home-parents',
     loadComponent: () => import('./home-parents/home-parents.page').then( m => m.HomeParentsPage)
   },
-
-
 ];
