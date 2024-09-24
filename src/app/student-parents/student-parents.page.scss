@@ -1,0 +1,142 @@
+ion-content {
+    --background: linear-gradient(90deg, #4dd0e1, #1e3ce5);
+    --padding-start: 0;
+    --padding-end: 0;
+  }
+
+  .return-button {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 1000;
+    --color: #ffffff;
+    --background: transparent;
+    --padding-start: 0;
+    --padding-end: 0;
+  
+    ion-icon {
+      font-size: 3rem;
+    }
+  }
+
+  .app-title {
+    color: white;
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    padding-top: 0.6rem;
+  }
+
+  .white-container {
+    background-color: white;
+    border-radius: 1.5rem;
+    padding: 1.1rem;
+    margin: 1rem;
+    height: 85%; // Adjust height to account for margins
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; // Prevent content from overflowing
+  }
+
+  .student-info {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .student-image {
+    width: 100%;
+    height: auto;
+    border-radius: 1.5rem;
+    overflow: hidden;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  .student-name {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 0;
+  }
+
+  .student-address, .school-address {
+    display: flex;
+    align-items: center;
+    color: #666;
+    font-size: 1.2rem;
+    font-weight: 500;
+    margin-top: 0.5rem;
+
+    ion-icon {
+      margin-right: 0.3rem;
+      color: #e51e1e;
+      font-size: 1.5rem;
+    }
+  }
+
+  .info-boxes {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .info-box {
+    background-color: #f0f0f0;
+    border-radius: 0.5rem;
+    padding: 0.3rem;
+    text-align: center;
+    width: 30%;
+  }
+
+  .info-label {
+    font-size: 0.8rem;
+    color: #666;
+    margin-bottom: 0.2rem;
+  }
+
+  .info-value {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #333;
+  }
+
+  .school-info {
+    margin-top: auto;
+    text-align: center;
+  }
+
+  .school-name {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+  }
+
+  .school-info-box {
+    background-color: #f0f0f0;
+    border-radius: 0.5rem;
+    margin-top: auto;
+    width: 100%;
+    text-align: center;
+
+    .school-name {
+      font-size: 1.4rem;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+    }
+
+    .school-address {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #666;
+      font-size: 1.2rem;
+
+      ion-icon {
+        color: #e51e1e;
+      }
+    }
+  }
