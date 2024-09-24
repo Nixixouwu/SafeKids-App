@@ -14,8 +14,8 @@ import { arrowBackOutline } from 'ionicons/icons';
 })
 export class RegisterPage implements OnInit {
 
-  nombreApoderado: string = '';
-  nombreAlumno: string = '';
+  rut: string = '';
+  nombreCompleto: string = '';
   instituto: string = '';
   telefono: string = '';
   email: string = '';
@@ -23,7 +23,7 @@ export class RegisterPage implements OnInit {
 
   onSubmit() {
     // Handle login logic here
-    console.log('Register submitted', this.nombreApoderado, this.nombreAlumno, this.instituto, this.telefono, this.email, this.password);
+    console.log('Register submitted', this.rut, this.nombreCompleto, this.instituto, this.telefono, this.email, this.password);
   }
 
   constructor() { 
@@ -31,6 +31,20 @@ export class RegisterPage implements OnInit {
   }
 
   ngOnInit() {
+  }
+
+  onTelefonoInput(event: any) {
+    const input = event.target as HTMLInputElement;
+    const value = input.value;
+    
+    // Remove any non-numeric characters
+    const numericValue = value.replace(/[^0-9]/g, '');
+    
+    // Update the input value if it has changed
+    if (value !== numericValue) {
+      input.value = numericValue;
+      this.telefono = numericValue;
+    }
   }
 
 }

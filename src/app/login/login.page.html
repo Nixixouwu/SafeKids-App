@@ -7,15 +7,15 @@
       <h1>¡Bienvenido!</h1>
       <form (ngSubmit)="onSubmit()">
         <ion-item>
-          <ion-icon name="mail"></ion-icon>
-          <ion-input type="email" name="email" [(ngModel)]="email" placeholder="hola@correo.com"></ion-input>
+          <ion-icon name="key"></ion-icon>
+          <ion-input type="text" name="rut" [(ngModel)]="rut" placeholder="RUT (12345678)"></ion-input>
         </ion-item>
         <ion-item>
           <ion-icon name="lock-closed"></ion-icon>
           <ion-input type="password" name="password" [(ngModel)]="password" placeholder="Contraseña"></ion-input>
         </ion-item>
-        <p class="forgot-password" [routerLink]="['/home-parents']">¿Olvidaste tu contraseña?</p>
-        <ion-button expand="block" type="submit" class="login-button">Iniciar sesión</ion-button>
+        <p class="forgot-password">¿Olvidaste tu contraseña?</p>
+        <ion-button expand="block" type="submit" class="login-button" [routerLink]="['/home-parents']">Iniciar sesión</ion-button>
       </form>
       <p class="signup">
         ¿Aún no tienes una cuenta? 

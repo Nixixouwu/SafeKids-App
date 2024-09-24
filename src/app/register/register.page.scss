@@ -73,6 +73,28 @@ ion-item {
     --background: rgba(255, 255, 255, 0.3);
   }
 
+  &.telefono-item {
+    --padding-start: 2.5rem;
+    position: relative;
+
+    &::before {
+      content: '+';
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 1.5rem;
+      height: 1.5rem;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #ffffff;
+      font-size: 1.3rem;
+      z-index: 1;
+    }
+  }
+
   ion-input, ion-select {
     --padding-top: 0.75rem;
     --padding-bottom: 0.75rem;

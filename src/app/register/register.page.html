@@ -9,13 +9,13 @@
     <div class="form-container">
       <h1>Crear una cuenta</h1>
       <form (ngSubmit)="onSubmit()">
-        <ion-label position="stacked">NOMBRE APODERADO</ion-label>
+        <ion-label position="stacked">RUT</ion-label>
         <ion-item>
-          <ion-input type="text" [(ngModel)]="nombreApoderado" name="nombreApoderado"></ion-input>
+          <ion-input type="text" [(ngModel)]="rut" name="rut"></ion-input>
         </ion-item>
-        <ion-label position="stacked">NOMBRE ALUMNO</ion-label>
+        <ion-label position="stacked">NOMBRE COMPLETO</ion-label>
         <ion-item>
-          <ion-input type="text" [(ngModel)]="nombreAlumno" name="nombreAlumno"></ion-input>
+          <ion-input type="text" [(ngModel)]="nombreCompleto" name="nombreCompleto"></ion-input>
         </ion-item>
         <ion-label position="stacked">SELECCIONA INSTITUTO EDUCACIONAL</ion-label>
         <ion-item>
@@ -25,8 +25,8 @@
           </ion-select>
         </ion-item>
         <ion-label position="stacked">TELEFONO</ion-label>
-        <ion-item>
-          <ion-input type="tel" [(ngModel)]="telefono" name="telefono"></ion-input>
+        <ion-item class="telefono-item">
+          <ion-input type="tel" [(ngModel)]="telefono" name="telefono" (ionInput)="onTelefonoInput($event)" inputmode="numeric" pattern="[0-9]*"></ion-input>
         </ion-item>
         <ion-label position="stacked">EMAIL</ion-label>
         <ion-item>
