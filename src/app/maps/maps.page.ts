@@ -3,6 +3,8 @@ import * as L from 'leaflet';
 import { Geolocation } from '@capacitor/geolocation';
 import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
+
 @Component({
   selector: 'app-maps',
   templateUrl: './maps.page.html',
@@ -16,10 +18,10 @@ export class MapsPage implements OnInit, OnDestroy {
   marker!: L.Marker;
   updateInterval: any;
 
-  constructor() {}
+  constructor(private router: Router) {}
 
   ngOnInit() {
-    this.initMap();
+    this.checkAndReloadIfNeeded();
   }
 
   ngOnDestroy() {
@@ -83,5 +85,16 @@ export class MapsPage implements OnInit, OnDestroy {
         window.addEventListener('load', () => resolve());
       }
     });
+  }
+
+  private checkAndReloadIfNeeded() {
+    const hasReloaded = localStorage.getItem('mapReloaded');
+    if (!hasReloaded) {
+      localStorage.setItem('mapReloaded', 'true');
+      window.location.reload();
+    } else {
+      localStorage.removeItem('mapReloaded');
+      this.initMap();
+    }
   }
 }

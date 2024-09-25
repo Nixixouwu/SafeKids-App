@@ -5,13 +5,35 @@
 </ion-header>
 
 <ion-content>
-  <div id="map"></div>
-  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-    <ion-fab-button (click)="centerMap()">
-
-      <ion-icon name="locate-outline"></ion-icon>
-      
-    </ion-fab-button>
-  </ion-fab>
-  
+  <div class="trip-info-overlay">
+    <h2>Seguimiento del Viaje</h2>
+    <div class="driver-info">
+      <img src="assets/img/conductor.jpg" alt="Foto del conductor" class="driver-photo">
+      <div class="driver-details">
+        <p class="driver-name">Juan Valdez</p>
+        <p class="vehicle-id">CV RZ 12</p>
+        <ion-button size="small" fill="outline">IR AL PERFIL</ion-button>
+      </div>
+    </div>
+    <div class="route-info">
+      <div id="map"></div>
+    </div>
+    <div class="map-controls">
+      <ion-button (click)="centerMap()" class="center-button">
+        <ion-icon name="locate-outline" slot="start"></ion-icon>
+        VOLVER A CENTRAR
+      </ion-button>
+      <div class="distance-info">
+        <p>10 min • 2.6 km</p>
+      </div>
+    </div>
+    <div class="passenger-info">
+      <img src="assets/img/kid.png" alt="Foto del estudiante" class="passenger-photo">
+      <div class="passenger-details">
+        <p class="passenger-role">Estudiante</p>
+        <p class="passenger-name">Jorge Muñoz</p>
+      </div>
+    </div>
+  </div>
 </ion-content>
+

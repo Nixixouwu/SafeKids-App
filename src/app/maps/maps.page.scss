@@ -1,19 +1,118 @@
 @import "~leaflet/dist/leaflet.css";
 
+ion-content {
+  --background: linear-gradient(120deg, #4dd0e1, #1e3ce5);
+}
+
+.trip-info-overlay {
+  position: absolute;
+  top: 15px;
+  bottom: 15px;
+  left: 20px;
+  right: 20px;
+  background-color: white;
+  border-radius: 10px;
+  padding: 15px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+}
+
+h2 {
+  color: #3880ff;
+  margin-bottom: 15px;
+}
+
+.driver-info, .passenger-info {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.driver-photo, .passenger-photo {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  margin-right: 15px;
+}
+
+.driver-details, .passenger-details {
+  flex-grow: 1;
+}
+
+.driver-name {
+  font-size: 18px;
+  font-weight: bold;
+  margin: 0;
+  color: #333;
+}
+
+.vehicle-id {
+  font-size: 16px;
+  margin: 0;
+  color: #666;
+}
+
+ion-button {
+  --padding-start: 10px;
+  --padding-end: 10px;
+  margin-top: 5px;
+}
+
+.route-info {
+  background-color: #f4f5f8;
+  border-radius: 8px;
+  padding: 15px;
+  margin: 15px 0;
+  height: 400px;
+}
+
 #map {
   width: 100%;
   height: 100%;
+  border-radius: 8px;
 }
 
-ion-content {
+.map-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: white;
+  border-radius: 25px;
+  padding: 10px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.center-button {
   --background: transparent;
+  --color: #333;
+  --box-shadow: none;
+  font-size: 14px;
 }
 
-// Asegúrate de que otros elementos estén por encima del mapa
-ion-fab {
-  z-index: 1000;
-  margin-bottom: 20px;
-  margin-right: 20px;
+.distance-info {
+  background-color: #f4f5f8;
+  padding: 5px 15px;
+  border-radius: 15px;
+  
+  p {
+    margin: 0;
+    font-size: 14px;
+    color: #666;
+  }
+}
+
+.passenger-role {
+  font-size: 14px;
+  color: #666;
+  margin: 0;
+}
+
+.passenger-name {
+  font-size: 16px;
+  font-weight: bold;
+  margin: 0;
+  color: #333;
 }
 
 .loading-indicator {
