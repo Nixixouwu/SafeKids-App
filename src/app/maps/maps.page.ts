@@ -1,9 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Database, ref, onValue, off } from '@angular/fire/database';
 import * as L from 'leaflet';
 import { Geolocation } from '@capacitor/geolocation';
 import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-maps',
@@ -13,18 +13,21 @@ import { Router } from '@angular/router';
   imports: [IonicModule, CommonModule]
 })
 export class MapsPage implements OnInit, OnDestroy {
-
   map!: L.Map;
-  marker!: L.Marker;
+  driverMarker!: L.Marker;
   updateInterval: any;
 
-  constructor(private router: Router) {}
+  constructor(private database: Database) {}
 
   ngOnInit() {
     this.checkAndReloadIfNeeded();
+    this.initMap();
+    this.listenToDriverLocation();
   }
 
   ngOnDestroy() {
+    const driverLocationRef = ref(this.database, 'Users/dtdt4t4t3w4t43/Coords');
+    off(driverLocationRef);
     if (this.updateInterval) {
       clearInterval(this.updateInterval);
     }
@@ -37,7 +40,6 @@ export class MapsPage implements OnInit, OnDestroy {
       attribution: '© OpenStreetMap contributors'
     }).addTo(this.map);
     await this.centerOnUser(true);
-    this.startLocationUpdates();
   }
 
   async centerOnUser(centerMap: boolean = false) {
@@ -56,45 +58,50 @@ export class MapsPage implements OnInit, OnDestroy {
         popupAnchor: [0, -82]
       });
 
-      if (this.marker) {
-        this.marker.setLatLng([latitude, longitude]);
-      } else {
-        this.marker = L.marker([latitude, longitude], { icon: customIcon }).addTo(this.map);
-      }
+      this.driverMarker = L.marker([latitude, longitude], { icon: customIcon }).addTo(this.map);
     } catch (error) {
-      console.error('Error al obtener la ubicación:', error);
+      console.error('Error al centrar el mapa en el usuario:', error);
     }
   }
 
-  startLocationUpdates() {
-    this.updateInterval = setInterval(() => {
-      this.centerOnUser(false);
-    }, 5000); // 5000 ms = 5 segundos
+  async waitForDom() {
+    return new Promise<void>((resolve) => {
+      const checkExist = setInterval(() => {
+        const mapElement = document.getElementById('map');
+        if (mapElement) {
+          clearInterval(checkExist);
+          resolve();
+        }
+      }, 100);
+    });
   }
 
-  // Nuevo método para centrar el mapa
-  centerMap() {
-    this.centerOnUser(true);
+  checkAndReloadIfNeeded() {
+    // Aquí puedes implementar la lógica para verificar si es necesario recargar
+    // Por ejemplo, verificar el estado de la sesión o la autenticación
   }
 
-  private waitForDom(): Promise<void> {
-    return new Promise(resolve => {
-      if (document.readyState === 'complete') {
-        resolve();
-      } else {
-        window.addEventListener('load', () => resolve());
+  listenToDriverLocation() {
+    const driverLocationRef = ref(this.database, 'Users/dtdt4t4t3w4t43/Coords');
+    onValue(driverLocationRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        this.updateDriverMarker(data.Latitude, data.Longitude);
       }
     });
   }
 
-  private checkAndReloadIfNeeded() {
-    const hasReloaded = localStorage.getItem('mapReloaded');
-    if (!hasReloaded) {
-      localStorage.setItem('mapReloaded', 'true');
-      window.location.reload();
+  updateDriverMarker(latitude: number, longitude: number) {
+    const latLng = L.latLng(latitude, longitude);
+    if (!this.driverMarker) {
+      this.driverMarker = L.marker(latLng).addTo(this.map);
     } else {
-      localStorage.removeItem('mapReloaded');
-      this.initMap();
+      this.driverMarker.setLatLng(latLng);
     }
+    this.map.setView(latLng, 15);
+  }
+
+  centerMap() {
+    this.centerOnUser(true); // Llama a la función que centra el mapa en la ubicación actual
   }
 }
