@@ -13,7 +13,7 @@ bootstrapApplication(AppComponent, {
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     provideIonicAngular(),
     provideRouter(routes),
-    provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
+    provideFirebaseApp(() => initializeApp(environment.firebaseConfig)), // Asegúrate de que esto esté correcto
     provideDatabase(() => getDatabase()),
   ],
 });
