@@ -29,11 +29,19 @@ export class LoginPage implements OnInit {
   async onSubmit() {
     try {
       await this.authService.login(this.correo, this.password);
-      this.authService.setUserEmail(this.correo);
-      if (this.correo.endsWith('@safekids.com')) {
-        this.router.navigate(['/driver']);
+      const userId = this.authService.getUserId(); // Obtén el ID almacenado
+      console.log('User ID:', userId);
+      console.log('cprrep:', this.correo); // Verifica el valor del userId
+
+      if (!userId) {
+        console.error('User ID is null or undefined, cannot navigate.');
+        return; // Salir si userId es nulo
+      }
+
+      if (this.correo?.endsWith('@safekids.com')) {
+        this.router.navigate(['/driver', userId]); // Navega a driver con el userId
       } else {
-        this.router.navigate(['/home-parents']);
+        this.router.navigate(['/home-parents', userId]); // Navega a home-parents con el userId
       }
     } catch (error) {
       console.error('Error en el inicio de sesión:', error);

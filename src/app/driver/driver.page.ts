@@ -4,48 +4,53 @@ import { Database, ref, set, get } from '@angular/fire/database';
 import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../services/auth.service';
+import { ActivatedRoute } from '@angular/router';
+import { Firestore, doc, getDoc } from '@angular/fire/firestore';
+import { Router } from '@angular/router';
+import { RouterModule } from '@angular/router'; // Asegúrate de importar RouterModule
 
 @Component({
   selector: 'app-driver',
   templateUrl: './driver.page.html',
   styleUrls: ['./driver.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule]
+  imports: [IonicModule, CommonModule, RouterModule] // Asegúrate de que RouterModule esté incluido aquí
 })
 export class DriverPage implements OnInit {
   private watchId: string | undefined;
   driverInfo: any = {};
   schoolInfo: any = {};
+  driverImageUrl: string = ''; // Asegúrate de que esta línea esté presente
 
   constructor(
     private db: Database,
-    private authService: AuthService
+    private authService: AuthService,
+    private route: ActivatedRoute,
+    private firestore: Firestore
   ) {}
 
   ngOnInit() {
-    this.loadDriverInfo();
+    this.route.params.subscribe(params => {
+      const userId = params['id']; // Obtiene el ID de la ruta
+      this.loadDriverInfo(userId);
+    });
   }
 
-  async loadDriverInfo() {
-    const userEmail = this.authService.getUserEmail();
-    console.log('User email:', userEmail);
-    if (userEmail) {
-      const conductorRef = ref(this.db, 'Conductor');
-      const snapshot = await get(conductorRef);
-      console.log('Snapshot exists:', snapshot.exists());
-      if (snapshot.exists()) {
-        const conductores = snapshot.val();
-        const conductor = Object.values(conductores).find((c: any) => c.correo === userEmail);
-        if (conductor) {
-          this.driverInfo = conductor;
-          console.log('Driver info:', this.driverInfo);
-          await this.loadSchoolInfo(this.driverInfo.FK_COColegio);
-        } else {
-          console.error('No driver data found for this email');
-        }
+  async loadDriverInfo(userId: string) {
+    const driverDocRef = doc(this.firestore, `Conductor/${userId}`);
+    
+    try {
+      const driverDocSnapshot = await getDoc(driverDocRef);
+      
+      if (driverDocSnapshot.exists()) {
+        this.driverInfo = { id: driverDocSnapshot.id, ...driverDocSnapshot.data() };
+        this.driverImageUrl = this.driverInfo.Imagen || this.driverImageUrl; // Actualiza la imagen si existe
+        console.log('Información del conductor:', this.driverInfo); // Para depuración
       } else {
-        console.error('No conductors found in the database');
+        console.error('No se encontró información del conductor para este ID');
       }
+    } catch (error) {
+      console.error('Error al obtener el documento:', error);
     }
   }
 

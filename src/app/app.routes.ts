@@ -18,16 +18,13 @@ export const routes: Routes = [
     path: 'register',
     loadComponent: () => import('./register/register.page').then( m => m.RegisterPage)
   },  
-  {
-    path: 'home',
-    loadComponent: () => import('./home/home.page').then( m => m.HomePage)
-  },
+  
   {
     path: 'maps',
     loadComponent: () => import('./maps/maps.page').then( m => m.MapsPage)
   },
   {
-    path: 'home-parents',
+    path: 'home-parents/:id',
     loadComponent: () => import('./home-parents/home-parents.page').then( m => m.HomeParentsPage)
   },
   {
@@ -35,7 +32,7 @@ export const routes: Routes = [
     loadComponent: () => import('./student-parents/student-parents.page').then( m => m.StudentParentsPage)
   },
   {
-    path: 'driver',
+    path: 'driver/:id',
     loadComponent: () => import('./driver/driver.page').then( m => m.DriverPage)
   },
 

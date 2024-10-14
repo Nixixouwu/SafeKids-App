@@ -4,22 +4,23 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding">
-  <div class="driver-card">
-    <h1>SafeKIDS</h1>
+<ion-content>
+  <ion-button fill="clear" class="return-button" [routerLink]="['/home-parents']">
+    <ion-icon name="arrow-back-outline"></ion-icon>
+  </ion-button>
+  <h1 class="app-title">Información del Conductor</h1>
+
+  <div class="white-container">
     <div class="driver-info">
-      <img [src]="driverInfo.Imagen || 'assets/default-avatar.png'" alt="Driver Photo" class="driver-photo">
-      <div class="driver-details">
-        <h2>Conductor</h2>
-        <h3>{{ driverInfo.Nombre }} {{ driverInfo.Apellido }}</h3>
-        <p>RUT: {{ driverInfo.RUT }}</p>
+      <div class="driver-image">
+        <img [src]="driverImageUrl || 'assets/img/avatar-default.png'" alt="Foto del conductor">
       </div>
-    </div>
-    <ion-button expand="block" (click)="iniciarViaje()">INICIAR VIAJE</ion-button>
-    <div class="school-info">
-      <ion-icon name="location-outline"></ion-icon>
-      <p>{{ schoolInfo.name }}</p>
-      <p>{{ schoolInfo.address }}</p>
+      <div class="driver-details">
+        <p>Conductor</p>
+        <h2>{{ driverInfo.Nombre }} {{ driverInfo.Apellido }}</h2>
+        <p>RUT: {{ driverInfo.RUT }}</p>
+        <!-- Agrega más detalles según sea necesario -->
+      </div>
     </div>
   </div>
 </ion-content>
