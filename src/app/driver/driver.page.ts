@@ -1,24 +1,63 @@
 import { Component, OnInit } from '@angular/core';
 import { Geolocation } from '@capacitor/geolocation';
-import { Database, ref, set } from '@angular/fire/database';
+import { Database, ref, set, get } from '@angular/fire/database';
 import { IonicModule } from '@ionic/angular';
+import { CommonModule } from '@angular/common';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-driver',
-  template: `
-    <ion-content>
-      <ion-button (click)="iniciarViaje()">Iniciar Viaje</ion-button>
-    </ion-content>
-  `,
+  templateUrl: './driver.page.html',
+  styleUrls: ['./driver.page.scss'],
   standalone: true,
-  imports: [IonicModule]
+  imports: [IonicModule, CommonModule]
 })
 export class DriverPage implements OnInit {
   private watchId: string | undefined;
+  driverInfo: any = {};
+  schoolInfo: any = {};
 
-  constructor(private db: Database) {}
+  constructor(
+    private db: Database,
+    private authService: AuthService
+  ) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.loadDriverInfo();
+  }
+
+  async loadDriverInfo() {
+    const userEmail = this.authService.getUserEmail();
+    console.log('User email:', userEmail);
+    if (userEmail) {
+      const conductorRef = ref(this.db, 'Conductor');
+      const snapshot = await get(conductorRef);
+      console.log('Snapshot exists:', snapshot.exists());
+      if (snapshot.exists()) {
+        const conductores = snapshot.val();
+        const conductor = Object.values(conductores).find((c: any) => c.correo === userEmail);
+        if (conductor) {
+          this.driverInfo = conductor;
+          console.log('Driver info:', this.driverInfo);
+          await this.loadSchoolInfo(this.driverInfo.FK_COColegio);
+        } else {
+          console.error('No driver data found for this email');
+        }
+      } else {
+        console.error('No conductors found in the database');
+      }
+    }
+  }
+
+  async loadSchoolInfo(schoolPath: string) {
+    const schoolRef = ref(this.db, schoolPath);
+    const snapshot = await get(schoolRef);
+    if (snapshot.exists()) {
+      this.schoolInfo = snapshot.val();
+    } else {
+      console.error('No school data found');
+    }
+  }
 
   async iniciarViaje() {
     try {

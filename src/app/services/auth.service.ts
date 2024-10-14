@@ -9,6 +9,7 @@ import { Router } from '@angular/router';
 })
 export class AuthService {
   private auth;
+  private userEmail: string | null = null;
 
   constructor(private router: Router) {
     const app = initializeApp(environment.firebaseConfig); // Asegúrate de que esto esté aquí
@@ -36,5 +37,13 @@ export class AuthService {
   // Método de ejemplo para cerrar sesión
   logout(): void {
     // Lógica para cerrar sesión aquí
+  }
+
+  setUserEmail(email: string) {
+    this.userEmail = email;
+  }
+
+  getUserEmail(): string | null {
+    return this.userEmail;
   }
 }

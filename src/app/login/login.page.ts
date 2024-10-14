@@ -28,17 +28,12 @@ export class LoginPage implements OnInit {
 
   async onSubmit() {
     try {
-      await this.authService.login(this.correo, this.password); // Cambiado de rut a correo
-      const user = { email: this.correo }; // Usar el correo ingresado
-      // Verifica el dominio del correo
-      if (user.email?.endsWith('@safekids.com')) {
+      await this.authService.login(this.correo, this.password);
+      this.authService.setUserEmail(this.correo);
+      if (this.correo.endsWith('@safekids.com')) {
         this.router.navigate(['/driver']);
-        
-        console.log(user.email);
       } else {
-        if (!user.email?.endsWith('@safekids.com')) {
         this.router.navigate(['/home-parents']);
-        console.log(user.email);}
       }
     } catch (error) {
       console.error('Error en el inicio de sesión:', error);
