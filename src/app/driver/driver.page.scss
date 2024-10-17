@@ -34,8 +34,8 @@ h1 {
 
 .driver-info {
   display: flex;
-  flex-direction: column;
   align-items: center;
+  margin-bottom: 20px;
 }
 
 .driver-image {
@@ -43,7 +43,7 @@ h1 {
   height: 120px;
   border-radius: 50%;
   overflow: hidden;
-  margin-bottom: 15px;
+  margin-right: 20px;
   border: 2px solid #1e88e5;
 }
 
@@ -54,21 +54,46 @@ h1 {
 }
 
 .driver-details {
-  margin-top: 10px;
-  font-size: 18px;
-  font-weight: bold;
-  color: #333;
+  flex: 1;
+  text-align: left;
 }
 
-.app-title {
-  font-size: 24px;
+.role {
+  color: #666;
+  font-size: 14px;
+}
+
+.name {
+  color: #333;
+  font-size: 20px;
   font-weight: bold;
-  margin-bottom: 10px;
+}
+
+.vehicle-label {
+  color: #666;
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+.vehicle-model, .vehicle-plate {
+  color: #333;
+  font-size: 16px;
+}
+
+.school-info {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.school-name {
+  font-size: 18px;
+  font-weight: bold;
   color: #1e88e5;
 }
 
-.return-button {
-  margin-bottom: 20px;
+.school-address {
+  color: #666;
+  font-size: 14px;
 }
 
 ion-button {
@@ -76,28 +101,15 @@ ion-button {
   --color: white;
   font-weight: bold;
   margin-top: 20px;
+}
+
+.return-button {
   margin-bottom: 20px;
 }
 
-.school-info {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-
-  ion-icon {
-    font-size: 24px;
-    color: #1e88e5;
-    margin-bottom: 10px;
-  }
-
-  p {
-    color: #666;
-    font-size: 14px;
-    margin-bottom: 2px;
-  }
-}
-
-.driver-info p {
-  color: #333;
+.app-title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #1e88e5;
 }
