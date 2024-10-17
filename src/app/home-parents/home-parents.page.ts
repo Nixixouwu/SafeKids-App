@@ -7,7 +7,7 @@ import { RouterModule } from '@angular/router';
 import { addIcons } from 'ionicons';
 import { bus, arrowBackOutline } from 'ionicons/icons';
 import { AuthService } from '../services/auth.service';
-import { Firestore, doc, getDoc } from '@angular/fire/firestore';
+import { Firestore, doc, getDoc, collection, query, getDocs, where } from '@angular/fire/firestore';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
@@ -19,7 +19,7 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class HomeParentsPage implements OnInit {
   parentImageUrl: string = 'assets/img/avatar-default.png'; // Default image
-  parentInfo: any = {}; // Para almacenar la información del padre
+  parentInfo: any = { estudiantes: [] }; // Inicializa estudiantes como un array vacío
 
   constructor(private authService: AuthService, private firestore: Firestore, private route: ActivatedRoute) { 
     addIcons({bus, arrowBackOutline});
@@ -39,14 +39,38 @@ export class HomeParentsPage implements OnInit {
       const parentDocSnapshot = await getDoc(parentDocRef);
       
       if (parentDocSnapshot.exists()) {
-        this.parentInfo = { id: parentDocSnapshot.id, ...parentDocSnapshot.data() };
+        this.parentInfo = { id: parentDocSnapshot.id, ...parentDocSnapshot.data(), estudiantes: [] }; // Asegúrate de que estudiantes esté inicializado
         this.parentImageUrl = this.parentInfo.image || this.parentImageUrl; // Actualiza la imagen si existe
+
+        // Cargar estudiantes asociados
+        await this.loadStudentsByParentId(userId);
         console.log('Información del padre:', this.parentInfo); // Para depuración
       } else {
         console.error('No se encontró información del padre para este ID');
       }
     } catch (error) {
-      console.error('Error al obtener el documento:', error);
+      console.error('Error al obtener la información del padre:', error);
+    }
+  }
+
+  async loadStudentsByParentId(parentId: string) {
+    const studentsRef = collection(this.firestore, 'Alumnos');
+    const q = query(studentsRef, where('FK_ALApoderado', '==', parentId)); // Filtra por el ID del apoderado
+
+    try {
+      const querySnapshot = await getDocs(q);
+      this.parentInfo.estudiantes = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+      // Verifica cuántos estudiantes se han cargado
+      console.log('Estudiantes cargados:', this.parentInfo.estudiantes.length); // Verifica la cantidad de estudiantes
+      console.log('Estudiantes:', this.parentInfo.estudiantes); // Verifica los datos de los estudiantes
+
+      // Si no hay estudiantes, puedes manejarlo aquí
+      if (this.parentInfo.estudiantes.length === 0) {
+        console.log('No hay estudiantes asociados a este apoderado.');
+      }
+    } catch (error) {
+      console.error('Error al cargar estudiantes:', error);
     }
   }
 

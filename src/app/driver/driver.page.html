@@ -1,9 +1,3 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>Información del Conductor</ion-title>
-  </ion-toolbar>
-</ion-header>
-
 <ion-content>
   <div class="white-container">
     <div class="driver-info">
@@ -14,16 +8,16 @@
         <p class="role">Conductor</p>
         <h2 class="name">{{ driverInfo.Nombre }} {{ driverInfo.Apellido }}</h2>
         <p class="vehicle-label">Vehículo</p>
-        <p class="vehicle-model">{{ busInfo.Modelo }}</p>
+        <p class="vehicle-model"><strong>{{ busInfo.Modelo }}</strong></p>
         <p class="vehicle-plate">{{ busInfo.ID_Placa }}</p>
       </div>
-      <div class="school-info">
-        <h3 class="school-name">{{ schoolInfo.Nombre }}</h3>
-        <p class="school-address">{{ schoolInfo.Direccion }}</p>
-      </div>
-      <div class="div">
-        <ion-button expand="full" (click)="iniciarViaje()">Iniciar Viaje</ion-button>
-      </div>
+    </div>
+    <div class="div">
+      <ion-button expand="full" (click)="iniciarViaje()">Iniciar Viaje</ion-button>
+    </div>
+    <div class="school-info">
+      <h3 class="school-name">{{ schoolInfo.Nombre }}</h3>
+      <p class="school-address">{{ schoolInfo.Direccion }}</p>
     </div>
   </div>
 </ion-content>

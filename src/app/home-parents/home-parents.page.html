@@ -18,11 +18,11 @@
       </div>
     </div>
 
-    <h3 class="title-students">Estudiantes</h3>
+    <h3 class="title-students">Estudiantes ({{ parentInfo.estudiantes.length }})</h3>
     <div class="students-container">
       <div class="student" *ngFor="let student of parentInfo.estudiantes">
-        <img [src]="student.imagen || 'assets/img/avatar-default.png'" [routerLink]="['/student-parents']" alt="{{ student.nombre }}">
-        <span class="name">{{ student.nombre }}</span>
+        <img [src]="student.imagen || 'assets/img/avatar-default.png'" [routerLink]="['/student-parents', student.id]" alt="{{ student.Nombre }}">
+        <span class="name">{{ student.Nombre }}</span>
       </div>
     </div>
 
