@@ -47,17 +47,19 @@ export class DriverPage implements OnInit {
         this.driverInfo = { id: driverDocSnapshot.id, ...driverDocSnapshot.data() };
         this.driverImageUrl = this.driverInfo.Imagen || this.driverImageUrl;
 
-        // Verifica si las referencias existen antes de intentar acceder a ellas
-        if (this.driverInfo.FK_COBus && this.driverInfo.FK_COBus.id) {
-          await this.loadBusInfo(this.driverInfo.FK_COBus.id);
+        // Verifica si las IDs existen antes de intentar acceder a ellas
+        const busId = this.driverInfo.FK_COBus; // Ahora solo es la ID
+        if (busId) {
+          await this.loadBusInfo(busId);
         } else {
-          console.error('FK_COBus no está definido o no tiene un ID');
+          console.error('FK_COBus no está definido');
         }
 
-        if (this.driverInfo.FK_COColegio && this.driverInfo.FK_COColegio.id) {
-          await this.loadSchoolInfo(this.driverInfo.FK_COColegio.id);
+        const schoolId = this.driverInfo.FK_COColegio; // Ahora solo es la ID
+        if (schoolId) {
+          await this.loadSchoolInfo(schoolId);
         } else {
-          console.error('FK_COColegio no está definido o no tiene un ID', this.driverInfo.FK_COBus.id);
+          console.error('FK_COColegio no está definido');
         }
       } else {
         console.error('No se encontró información del conductor para este ID');
