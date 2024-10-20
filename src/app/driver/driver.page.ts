@@ -106,7 +106,7 @@ export class DriverPage implements OnInit {
   async iniciarViaje() {
     try {
       const position = await Geolocation.getCurrentPosition();
-      this.updateLocationInFirebase(position.coords.latitude, position.coords.longitude);
+      this.updateLocationInFirebase(this.driverInfo.id, position.coords.latitude, position.coords.longitude); // Se agregó el ID del conductor
       this.startLocationUpdates();
     } catch (e) {
       console.error('Error al iniciar el viaje', e);
@@ -118,14 +118,14 @@ export class DriverPage implements OnInit {
       { enableHighAccuracy: true, timeout: 1000 },
       (position) => {
         if (position) {
-          this.updateLocationInFirebase(position.coords.latitude, position.coords.longitude);
+          this.updateLocationInFirebase(this.driverInfo.id, position.coords.latitude, position.coords.longitude); // Se agregó el ID del conductor
         }
       }
     );
   }
 
-  updateLocationInFirebase(latitude: number, longitude: number) {
-    const driverLocationRef = ref(this.db, 'Users/dtdt4t4t3w4t43/Coords');
+  updateLocationInFirebase(driverId: string, latitude: number, longitude: number) {
+    const driverLocationRef = ref(this.db, `Users/${driverId}/Coords`); // Usa el ID del conductor
     set(driverLocationRef, { Latitude: latitude, Longitude: longitude });
   }
 }
