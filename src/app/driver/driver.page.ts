@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
-import { Firestore, doc, getDoc } from '@angular/fire/firestore';
+import { Firestore, doc, getDoc, setDoc, collection } from '@angular/fire/firestore';
 import { Geolocation } from '@capacitor/geolocation';
 import { ref, set } from 'firebase/database';
 import { Database } from '@angular/fire/database';
@@ -105,9 +105,42 @@ export class DriverPage implements OnInit {
 
   async iniciarViaje() {
     try {
+      // Verifica si las IDs existen antes de intentar acceder a ellas
+      const busId = this.driverInfo.FK_COBus;
+      const schoolId = this.driverInfo.FK_COColegio;
+
+      if (!busId || !schoolId) {
+        console.error('No se puede iniciar el viaje: la ID del bus o del colegio no está definida.');
+        return;
+      }
+
+      // Carga la información del bus y la escuela
+      await this.loadBusInfo(busId);
+      await this.loadSchoolInfo(schoolId);
+
       const position = await Geolocation.getCurrentPosition();
-      this.updateLocationInFirebase(this.driverInfo.id, position.coords.latitude, position.coords.longitude); // Se agregó el ID del conductor
-      this.startLocationUpdates();
+      const viajeId = `${this.driverInfo.id}_${new Date().toISOString()}`; // Genera un ID único
+      const viajeRef = doc(this.firestore, `Viaje/${viajeId}`);
+
+      // Crea el viaje en la base de datos
+      await setDoc(viajeRef, {
+        FK_VIConductor: this.driverInfo.id,
+        FK_VIBus: this.busInfo.ID_Placa, // Almacena la ID del bus
+        FK_Colegio: this.schoolInfo.ID, // Almacena la ID del colegio
+        inicio: {
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+          timestamp: new Date().toISOString()
+        }
+      });
+
+      console.log('Viaje creado con ID:', viajeId);
+
+      // Inicializa la subcolección de pasajeros
+      const pasajerosRef = collection(this.firestore, `Viaje/${viajeId}/Pasajeros`);
+      // Aquí puedes agregar pasajeros si es necesario
+
+      this.startLocationUpdates(); // Inicia la actualización de la ubicación
     } catch (e) {
       console.error('Error al iniciar el viaje', e);
     }
