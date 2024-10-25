@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
-import { Firestore, doc, getDoc, setDoc, collection } from '@angular/fire/firestore';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Firestore, doc, getDoc, setDoc, collection, query, getDocs, where } from '@angular/fire/firestore';
 import { Geolocation } from '@capacitor/geolocation';
 import { ref, set } from 'firebase/database';
 import { Database } from '@angular/fire/database';
@@ -25,7 +25,8 @@ export class DriverPage implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private firestore: Firestore,
-    private database: Database
+    private database: Database,
+    private router: Router // Asegúrate de inyectar el Router
   ) {
     this.db = database;
   }
@@ -136,11 +137,26 @@ export class DriverPage implements OnInit {
 
       console.log('Viaje creado con ID:', viajeId);
 
-      // Inicializa la subcolección de pasajeros
-      const pasajerosRef = collection(this.firestore, `Viaje/${viajeId}/Pasajeros`);
-      // Aquí puedes agregar pasajeros si es necesario
+      // Obtener alumnos del mismo colegio
+      const alumnosRef = collection(this.firestore, 'Alumnos');
+      const q = query(alumnosRef, where('FK_ALColegio', '==', schoolId));
+      const querySnapshot = await getDocs(q);
 
-      this.startLocationUpdates(); // Inicia la actualización de la ubicación
+      const pasajerosRef = collection(this.firestore, `Viaje/${viajeId}/Pasajeros`);
+      for (const docSnapshot of querySnapshot.docs) {
+        const alumnoData = docSnapshot.data(); // Usa data() para obtener los datos
+        const pasajero = {
+          nombre: alumnoData['Nombre'],
+          apellido: alumnoData['Apellido'], // Asegúrate de que 'Apellido' sea el campo correcto
+          FK_PAAlumno: docSnapshot.id,
+          Abordo: false
+        };
+        const pasajeroDocRef = doc(this.firestore, `Viaje/${viajeId}/Pasajeros/${docSnapshot.id}`); // Usa el ID del documento
+        await setDoc(pasajeroDocRef, pasajero);
+      }
+
+      this.startLocationUpdates();
+      this.router.navigate(['/lista', viajeId]);
     } catch (e) {
       console.error('Error al iniciar el viaje', e);
     }

@@ -35,5 +35,10 @@ export const routes: Routes = [
     path: 'driver/:id',
     loadComponent: () => import('./driver/driver.page').then( m => m.DriverPage)
   },
+  {
+    path: 'lista/:viajeId',
+    loadComponent: () => import('./lista/lista.page').then( m => m.ListaPage)
+  },
+
 
 ];

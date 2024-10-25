@@ -1,0 +1,15 @@
+
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">lista</ion-title>
+    </ion-toolbar>
+  </ion-header>
+  <div *ngFor="let pasajero of pasajeros" class="passenger-item" (click)="goToStudent(pasajero.FK_PAAlumno)">
+    <ion-icon name="location-outline"></ion-icon>
+    <span>{{ pasajero.nombre }} {{ pasajero.apellido }}</span>
+    <ion-icon [name]="pasajero.Abordo ? 'checkmark-circle' : 'close-outline'" slot="end"></ion-icon>
+  </div>
+  <ion-button expand="full" (click)="detenerViaje()">DETENER VIAJES</ion-button>
+</ion-content>

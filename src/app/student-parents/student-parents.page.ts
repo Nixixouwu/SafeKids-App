@@ -20,7 +20,9 @@ export class StudentParentsPage implements OnInit {
   studentInfo: any = {}; // Para almacenar la información del estudiante
   defaultImage: string = 'assets/img/avatar-default.png'; // Imagen por defecto
 
-  constructor(private route: ActivatedRoute, private firestore: Firestore, private location: Location) {}
+  constructor(private route: ActivatedRoute, private firestore: Firestore, private location: Location) {
+    addIcons({arrowBackOutline});
+  }
 
   ngOnInit() {
     this.route.params.subscribe(params => {
