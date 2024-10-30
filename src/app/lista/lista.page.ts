@@ -1,5 +1,5 @@
 import { Component, OnInit, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { Firestore, collection, getDocs } from '@angular/fire/firestore';
+import { Firestore, collection, getDocs, doc, setDoc } from '@angular/fire/firestore';
 import { Router, ActivatedRoute } from '@angular/router';
 import { CommonModule, Location } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -50,6 +50,9 @@ export class ListaPage implements OnInit {
   }
 
   detenerViaje() {
+    const viajeRef = doc(this.firestore, `Viaje/${this.viajeId}`);
+    setDoc(viajeRef, { Terminado: true }, { merge: true }) // Cambia el estado a true
     this.location.back(); // Retrocede a la página anterior
+    
   }
 }

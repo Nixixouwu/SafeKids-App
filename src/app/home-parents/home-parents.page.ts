@@ -3,12 +3,22 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonContent, IonHeader, IonTitle, IonToolbar, IonIcon, IonButton } from '@ionic/angular/standalone';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import { addIcons } from 'ionicons';
 import { bus, arrowBackOutline } from 'ionicons/icons';
 import { AuthService } from '../services/auth.service';
-import { Firestore, doc, getDoc, collection, query, getDocs, where } from '@angular/fire/firestore';
+import { Firestore, doc, getDoc, collection, query, getDocs, where, onSnapshot } from '@angular/fire/firestore';
 import { ActivatedRoute } from '@angular/router';
+
+interface Viaje {
+  id: string;
+  FK_VIBus: string;
+  FK_VICondApellido: string;
+  FK_VICondNombre: string;
+  conductor: string;
+  Terminado: boolean;
+  FK_VIConductor: string;
+}
 
 @Component({
   selector: 'app-home-parents',
@@ -18,16 +28,16 @@ import { ActivatedRoute } from '@angular/router';
   imports: [IonIcon, IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, IonButton, RouterModule]
 })
 export class HomeParentsPage implements OnInit {
-  parentImageUrl: string = 'assets/img/avatar-default.png'; // Default image
-  parentInfo: any = { estudiantes: [] }; // Inicializa estudiantes como un array vacío
+  parentImageUrl: string = 'assets/img/avatar-default.png';
+  parentInfo: any = { estudiantes: [] };
 
-  constructor(private authService: AuthService, private firestore: Firestore, private route: ActivatedRoute) { 
+  constructor(private authService: AuthService, private firestore: Firestore, private route: ActivatedRoute, private router: Router) { 
     addIcons({bus, arrowBackOutline});
   }
 
   ngOnInit() {
     this.route.params.subscribe(params => {
-      const userId = params['id']; // Obtiene el ID de la ruta
+      const userId = params['id'];
       this.loadParentInfo(userId);
     });
   }
@@ -39,12 +49,13 @@ export class HomeParentsPage implements OnInit {
       const parentDocSnapshot = await getDoc(parentDocRef);
       
       if (parentDocSnapshot.exists()) {
-        this.parentInfo = { id: parentDocSnapshot.id, ...parentDocSnapshot.data(), estudiantes: [] }; // Asegúrate de que estudiantes esté inicializado
-        this.parentImageUrl = this.parentInfo.image || this.parentImageUrl; // Actualiza la imagen si existe
+        this.parentInfo = { id: parentDocSnapshot.id, ...parentDocSnapshot.data(), estudiantes: [] };
+        this.parentImageUrl = this.parentInfo.image || this.parentImageUrl;
 
         // Cargar estudiantes asociados
         await this.loadStudentsByParentId(userId);
-        console.log('Información del padre:', this.parentInfo); // Para depuración
+        this.subscribeToViajes(); // Suscribirse a los cambios en los viajes
+        console.log('Información del padre:', this.parentInfo);
       } else {
         console.error('No se encontró información del padre para este ID');
       }
@@ -55,22 +66,74 @@ export class HomeParentsPage implements OnInit {
 
   async loadStudentsByParentId(parentId: string) {
     const studentsRef = collection(this.firestore, 'Alumnos');
-    const q = query(studentsRef, where('FK_ALApoderado', '==', parentId)); // Filtra por el ID del apoderado
+    const q = query(studentsRef, where('FK_ALApoderado', '==', parentId));
 
     try {
       const querySnapshot = await getDocs(q);
-      this.parentInfo.estudiantes = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      this.parentInfo.estudiantes = querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data(),
+        viajes: [] as Viaje[]
+      }));
 
-      // Verifica cuántos estudiantes se han cargado
-      console.log('Estudiantes cargados:', this.parentInfo.estudiantes.length); // Verifica la cantidad de estudiantes
-      console.log('Estudiantes:', this.parentInfo.estudiantes); // Verifica los datos de los estudiantes
-
-      // Si no hay estudiantes, puedes manejarlo aquí
-      if (this.parentInfo.estudiantes.length === 0) {
-        console.log('No hay estudiantes asociados a este apoderado.');
+      // Cargar información de los viajes para cada estudiante
+      for (const student of this.parentInfo.estudiantes) {
+        await this.loadViajesForStudent(student);
       }
+
+      console.log('Estudiantes cargados:', this.parentInfo.estudiantes);
     } catch (error) {
       console.error('Error al cargar estudiantes:', error);
+    }
+  }
+
+  async loadViajesForStudent(student: any) {
+    const viajesRef = collection(this.firestore, `Viaje`);
+    const viajesSnapshot = await getDocs(viajesRef);
+
+    for (const viajeDoc of viajesSnapshot.docs) {
+      const viajeId = viajeDoc.id;
+      const pasajerosRef = collection(this.firestore, `Viaje/${viajeId}/Pasajeros`);
+      const pasajerosSnapshot = await getDocs(pasajerosRef);
+
+      const isStudentOnTrip = pasajerosSnapshot.docs.some(pasajero => pasajero.id === student.id);
+
+      if (isStudentOnTrip) {
+        const viajeData = { id: viajeId, ...viajeDoc.data() } as Viaje;
+
+        if (!viajeData.Terminado) {
+
+          student.viajes.push(viajeData);
+        }
+        break; // Salir después de encontrar el primer viaje no terminado
+      }
+    }
+  }
+
+  subscribeToViajes() {
+    const viajesRef = collection(this.firestore, 'Viaje');
+    onSnapshot(viajesRef, (snapshot) => {
+      snapshot.docChanges().forEach(change => {
+        if (change.type === 'added') {
+          // Aquí puedes manejar la lógica para agregar el viaje a los estudiantes
+          this.updateViajesForStudents(change.doc);
+        }
+      });
+    });
+  }
+
+  async updateViajesForStudents(viajeDoc: any) {
+    const viajeData = { id: viajeDoc.id, ...viajeDoc.data() } as Viaje;
+
+    for (const student of this.parentInfo.estudiantes) {
+      const pasajerosRef = collection(this.firestore, `Viaje/${viajeData.id}/Pasajeros`);
+      const pasajerosSnapshot = await getDocs(pasajerosRef);
+
+      const isStudentOnTrip = pasajerosSnapshot.docs.some(pasajero => pasajero.id === student.id);
+
+      if (isStudentOnTrip && !viajeData.Terminado) {
+        student.viajes.push(viajeData);
+      }
     }
   }
 
@@ -94,5 +157,9 @@ export class HomeParentsPage implements OnInit {
     } catch (error) {
       console.error('Error capturing image:', error);
     }
+  }
+
+  irAMapa(conductorId: string) {
+    this.router.navigate(['/maps', conductorId]); // Redirige a la página de mapas con la ID del conductor
   }
 }

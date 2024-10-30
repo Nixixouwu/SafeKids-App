@@ -28,12 +28,15 @@
 
     <h3 class="title-bus">Viajes en Curso</h3>
     <div class="bus-info-container">
-      <div class="bus-info" *ngFor="let viaje of parentInfo.viajes">
-        <ion-icon name="bus"></ion-icon>
-        <div class="bus-details">
-          <h4>{{ viaje.nombreEstudiante }}</h4>
-          <p><span class="bus-code">{{ viaje.codigoBus }}</span> - {{ viaje.conductor }}</p>
-        </div>
+      <div class="bus-info" *ngFor="let student of parentInfo.estudiantes">
+        <ng-container *ngFor="let viaje of student.viajes">
+          <div class="bus-info" *ngFor="let student of parentInfo.estudiantes"></div>
+          <div *ngIf="!viaje.Terminado" (click)="irAMapa(viaje.FK_VIConductor)">
+            <p class="viaje-info">Alumno: {{ student.Nombre }} {{ student.Apellido }}</p>
+            <p class="viaje-info">Patente: {{ viaje.FK_VIBus }}</p>
+            <p class="viaje-info">Conductor: {{ viaje.FK_VICondNombre }} {{ viaje.FK_VICondApellido }}</p>
+          </div>
+        </ng-container>
       </div>
     </div>
   </div>

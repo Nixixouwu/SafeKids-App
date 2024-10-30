@@ -126,8 +126,11 @@ export class DriverPage implements OnInit {
       // Crea el viaje en la base de datos
       await setDoc(viajeRef, {
         FK_VIConductor: this.driverInfo.id,
+        FK_VICondNombre: this.driverInfo.Nombre,
+        FK_VICondApellido: this.driverInfo.Apellido,
         FK_VIBus: this.busInfo.ID_Placa, // Almacena la ID del bus
-        FK_Colegio: this.schoolInfo.ID, // Almacena la ID del colegio
+        FK_Colegio: this.schoolInfo.ID,
+        Terminado: false,  // Almacena la ID del colegio
         inicio: {
           latitude: position.coords.latitude,
           longitude: position.coords.longitude,

@@ -20,8 +20,8 @@ export const routes: Routes = [
   },  
   
   {
-    path: 'maps',
-    loadComponent: () => import('./maps/maps.page').then( m => m.MapsPage)
+    path: 'maps/:id',
+    loadComponent: () => import('./maps/maps.page').then(m => m.MapsPage)
   },
   {
     path: 'home-parents/:id',
