@@ -11,5 +11,6 @@
     <span>{{ pasajero.nombre }} {{ pasajero.apellido }}</span>
     <ion-icon [name]="pasajero.Abordo ? 'checkmark-circle' : 'close-outline'" slot="end"></ion-icon>
   </div>
-  <ion-button expand="full" (click)="detenerViaje()">DETENER VIAJES</ion-button>
+  <ion-button expand="full" (click)="detenerViaje()">DETENER VIAJE</ion-button>
+  <ion-button expand="full" (click)="scanQRCode()">ESCANEAR QR</ion-button>
 </ion-content>

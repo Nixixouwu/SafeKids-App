@@ -7,6 +7,8 @@ import * as L from 'leaflet';
 import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { ref, off, DataSnapshot, onValue } from '@angular/fire/database';
+import * as allIcons from 'ionicons/icons';
+import { addIcons } from 'ionicons';
 
 @Component({
   selector: 'app-maps',
@@ -24,7 +26,9 @@ export class MapsPage implements OnInit, OnDestroy {
   updateInterval: any;
   driverId: string = '';
 
-  constructor(private database: Database, private firestore: Firestore, private route: ActivatedRoute) {}
+  constructor(private database: Database, private firestore: Firestore, private route: ActivatedRoute) {
+    addIcons(allIcons);
+  }
 
   ngOnInit() {
     this.route.params.subscribe(params => {

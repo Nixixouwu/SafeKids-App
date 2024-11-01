@@ -6,13 +6,17 @@ import { Firestore, doc, getDoc, setDoc, collection, query, getDocs, where } fro
 import { Geolocation } from '@capacitor/geolocation';
 import { ref, set } from 'firebase/database';
 import { Database } from '@angular/fire/database';
+import { RouterModule } from '@angular/router';
+import * as allIcons from 'ionicons/icons';
+import { addIcons } from 'ionicons';
+
 
 @Component({
   selector: 'app-driver',
   templateUrl: './driver.page.html',
   styleUrls: ['./driver.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule]
+  imports: [IonicModule, CommonModule, RouterModule]
 })
 export class DriverPage implements OnInit {
   driverInfo: any = {};
@@ -29,6 +33,7 @@ export class DriverPage implements OnInit {
     private router: Router // Asegúrate de inyectar el Router
   ) {
     this.db = database;
+    addIcons(allIcons);
   }
 
   ngOnInit() {

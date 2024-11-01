@@ -6,6 +6,8 @@ import { FormsModule } from '@angular/forms';
 import { IonContent, IonHeader, IonTitle, IonToolbar, IonButton, IonIcon } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import * as allIcons from 'ionicons/icons';
+import { Plugins } from '@capacitor/core';
+const { BarcodeScanner } = Plugins;
 
 @Component({
   selector: 'app-lista',
@@ -51,8 +53,40 @@ export class ListaPage implements OnInit {
 
   detenerViaje() {
     const viajeRef = doc(this.firestore, `Viaje/${this.viajeId}`);
-    setDoc(viajeRef, { Terminado: true }, { merge: true }) // Cambia el estado a true
+    setDoc(viajeRef, { Terminado: true }, { merge: true }); // Cambia el estado a true
     this.location.back(); // Retrocede a la página anterior
-    
+  }
+
+  async scanQRCode() {
+    try {
+      if (!BarcodeScanner || !BarcodeScanner['scan']) {
+        console.error('BarcodeScanner no está disponible.');
+        return;
+      }
+      
+      const result = await BarcodeScanner['scan']();
+      if (result.hasContent) {
+        console.log('QR Code scanned:', result.content);
+        
+        // Extraer el ID del alumno de la URL
+        const urlParts = result.content.split('/');
+        const studentId = urlParts[urlParts.length - 1]; // Suponiendo que el ID es la última parte de la URL
+
+        // Cambiar el booleano a true en la lista
+        this.updateStudentStatus(studentId);
+      }
+    } catch (error) {
+      console.error('Error al escanear el QR:', error);
+    }
+  }
+
+  updateStudentStatus(studentId: string) {
+    const student = this.pasajeros.find(p => p.FK_PAAlumno === studentId);
+    if (student) {
+      student.Abordo = true; // Cambia el booleano a true
+      console.log(`Estado del estudiante ${studentId} actualizado a 'Abordo':`, student);
+    } else {
+      console.error('Estudiante no encontrado:', studentId);
+    }
   }
 }

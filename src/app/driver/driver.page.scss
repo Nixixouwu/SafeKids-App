@@ -16,7 +16,27 @@ ion-content {
   --padding-end: 0;
   height: 100%;
 }
+.app-title {
+  color: white;
+  font-size: 2.5rem;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+.return-button {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 1000;
+  --color: #ffffff;
+  --background: transparent;
+  --padding-start: 0;
+  --padding-end: 0;
 
+  ion-icon {
+    font-size: 3rem;
+  }
+}
 .driver-card {
   background-color: white;
   border-radius: 20px;
@@ -24,13 +44,6 @@ ion-content {
   margin-top: 20px;
 }
 
-h1 {
-  color: #1e88e5;
-  font-size: 24px;
-  font-weight: bold;
-  text-align: center;
-  margin-bottom: 20px;
-}
 
 .driver-info {
   display: flex;
@@ -125,10 +138,11 @@ ion-button:hover {
 }
 
 .app-title {
-  font-size: 24px;
+  color: white;
+  font-size: 2.5rem;
   font-weight: bold;
-  margin-bottom: 10px;
-  color: #1e88e5;
+  text-align: center;
+  margin-bottom: 1.5rem;
 }
 
 // Responsividad
