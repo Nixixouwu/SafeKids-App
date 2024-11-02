@@ -7,7 +7,7 @@
   <div class="white-container">
     <div class="student-info">
       <div class="student-image">
-        <img [src]="studentInfo.imagen || defaultImage" alt="Student Image">
+        <img [src]="studentInfo.Imagen || defaultImage" alt="Student Image">
       </div>
       <h2 class="student-name">{{ studentInfo.Nombre }} {{ studentInfo.Apellido }}</h2>
       <p class="student-address">
@@ -30,10 +30,10 @@
       </div>
     </div>
     <div class="school-info-box">
-      <h3 class="school-name">{{ studentInfo.Colegio }}</h3>
+      <h3 class="school-name">{{ studentInfo.colegio?.Nombre }}</h3>
       <p class="school-address">
         <ion-icon name="location-outline"></ion-icon>
-        {{ studentInfo.DireccionColegio }}
+        {{ studentInfo.colegio?.Direccion }}
       </p>
     </div>
   </div>

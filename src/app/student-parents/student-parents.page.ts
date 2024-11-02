@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonContent, IonHeader, IonTitle, IonToolbar, IonButton, IonIcon } from '@ionic/angular/standalone';
 import { RouterModule } from '@angular/router';
-import { arrowBackOutline, locationOutline } from 'ionicons/icons';
+import { arrowBackOutline } from 'ionicons/icons';
 import { addIcons } from 'ionicons';
 import { Location } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
@@ -39,6 +39,19 @@ export class StudentParentsPage implements OnInit {
       
       if (studentDocSnapshot.exists()) {
         this.studentInfo = { id: studentDocSnapshot.id, ...studentDocSnapshot.data() };
+
+        // Recuperar información del colegio
+        const schoolId = this.studentInfo.FK_ALColegio; // Obtener el ID del colegio
+        if (schoolId) {
+          const schoolDocRef = doc(this.firestore, `Colegio/${schoolId}`);
+          const schoolDocSnapshot = await getDoc(schoolDocRef);
+          
+          if (schoolDocSnapshot.exists()) {
+            this.studentInfo.colegio = { id: schoolDocSnapshot.id, ...schoolDocSnapshot.data() }; // Almacenar información del colegio
+          } else {
+            console.error('No se encontró información del colegio para este ID',schoolId);
+          }
+        }
       } else {
         console.error('No se encontró información del estudiante para este ID');
       }

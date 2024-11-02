@@ -7,7 +7,7 @@
   <div class="white-container">
     <div class="parent-info">
       <div class="parent-image">
-        <img [src]="parentImageUrl" alt="Foto del padre">
+        <img [src]="parentInfo.Imagen" alt="Foto del padre">
       </div>
       <div class="parent-details">
         <span class="label">Apoderado</span>
@@ -21,7 +21,7 @@
     <h3 class="title-students">Estudiantes ({{ parentInfo.estudiantes.length }})</h3>
     <div class="students-container">
       <div class="student" *ngFor="let student of parentInfo.estudiantes">
-        <img [src]="student.imagen || 'assets/img/avatar-default.png'" [routerLink]="['/student-parents', student.id]" alt="{{ student.Nombre }}">
+        <img [src]="student.Imagen || 'assets/img/avatar-default.png'" [routerLink]="['/student-parents', student.id]" alt="{{ student.Nombre }}">
         <span class="name">{{ student.Nombre }}</span>
       </div>
     </div>
