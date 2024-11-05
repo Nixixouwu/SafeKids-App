@@ -53,15 +53,20 @@ export class DriverPage implements OnInit {
         this.driverInfo = { id: driverDocSnapshot.id, ...driverDocSnapshot.data() };
         this.driverImageUrl = this.driverInfo.Imagen || this.driverImageUrl;
 
-        // Verifica si las IDs existen antes de intentar acceder a ellas
-        const busId = this.driverInfo.FK_COBus; // Ahora solo es la ID
-        if (busId) {
-          await this.loadBusInfo(busId);
+        // Realiza una consulta para obtener el bus asociado al conductor
+        const busesRef = collection(this.firestore, 'Bus');
+        const q = query(busesRef, where('FK_BUConductor', '==', this.driverInfo.RUT)); // Suponiendo que el RUT está en driverInfo
+        const querySnapshot = await getDocs(q);
+
+        if (!querySnapshot.empty) {
+          const busData = querySnapshot.docs[0].data(); // Obtiene el primer bus encontrado
+          this.busInfo = { id: querySnapshot.docs[0].id, ...busData }; // Almacena la información del bus
+          console.log('Información del bus:', this.busInfo); // Para depuración
         } else {
-          console.error('FK_COBus no está definido');
+          console.error('No se encontró información del bus para este conductor');
         }
 
-        const schoolId = this.driverInfo.FK_COColegio; // Ahora solo es la ID
+        const schoolId = this.driverInfo.FK_COColegio; // Obtener el ID del colegio
         if (schoolId) {
           await this.loadSchoolInfo(schoolId);
         } else {
@@ -112,7 +117,7 @@ export class DriverPage implements OnInit {
   async iniciarViaje() {
     try {
       // Verifica si las IDs existen antes de intentar acceder a ellas
-      const busId = this.driverInfo.FK_COBus;
+      const busId = this.busInfo.ID_Placa;
       const schoolId = this.driverInfo.FK_COColegio;
 
       if (!busId || !schoolId) {
@@ -128,13 +133,19 @@ export class DriverPage implements OnInit {
       const viajeId = `${this.driverInfo.id}_${new Date().toISOString()}`; // Genera un ID único
       const viajeRef = doc(this.firestore, `Viaje/${viajeId}`);
 
+      // Verifica que la información del colegio esté definida
+      if (!this.schoolInfo.id) {
+        console.error('No se puede iniciar el viaje: la ID del colegio no está definida.', this.schoolInfo.id);
+        return;
+      }
+
       // Crea el viaje en la base de datos
       await setDoc(viajeRef, {
         FK_VIConductor: this.driverInfo.id,
         FK_VICondNombre: this.driverInfo.Nombre,
         FK_VICondApellido: this.driverInfo.Apellido,
         FK_VIBus: this.busInfo.ID_Placa, // Almacena la ID del bus
-        FK_Colegio: this.schoolInfo.ID,
+        FK_VIColegio: this.schoolInfo.id,
         Terminado: false,  // Almacena la ID del colegio
         inicio: {
           latitude: position.coords.latitude,
@@ -150,7 +161,6 @@ export class DriverPage implements OnInit {
       const q = query(alumnosRef, where('FK_ALColegio', '==', schoolId));
       const querySnapshot = await getDocs(q);
 
-      const pasajerosRef = collection(this.firestore, `Viaje/${viajeId}/Pasajeros`);
       for (const docSnapshot of querySnapshot.docs) {
         const alumnoData = docSnapshot.data(); // Usa data() para obtener los datos
         const pasajero = {
