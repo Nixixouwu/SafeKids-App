@@ -9,13 +9,15 @@ import { CommonModule } from '@angular/common';
 import { ref, off, DataSnapshot, onValue } from '@angular/fire/database';
 import * as allIcons from 'ionicons/icons';
 import { addIcons } from 'ionicons';
+import { Location } from '@angular/common';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-maps',
   templateUrl: './maps.page.html',
   styleUrls: ['./maps.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule]
+  imports: [IonicModule, CommonModule, RouterModule]
 })
 export class MapsPage implements OnInit, OnDestroy {
   map!: L.Map;
@@ -26,7 +28,7 @@ export class MapsPage implements OnInit, OnDestroy {
   updateInterval: any;
   driverId: string = '';
 
-  constructor(private database: Database, private firestore: Firestore, private route: ActivatedRoute) {
+  constructor(private database: Database, private firestore: Firestore, private route: ActivatedRoute, private location: Location) {
     addIcons(allIcons);
   }
 
@@ -153,11 +155,6 @@ export class MapsPage implements OnInit, OnDestroy {
     });
   }
 
-  checkAndReloadIfNeeded() {
-    // Aquí puedes implementar la lógica para verificar si es necesario recargar
-    // Por ejemplo, verificar el estado de la sesión o la autenticación
-  }
-
   listenToDriverLocation() {
     const driverLocationRef = ref(this.database, `Users/${this.driverId}/Coords`);
     onValue(driverLocationRef, (snapshot: DataSnapshot) => {
@@ -180,5 +177,8 @@ export class MapsPage implements OnInit, OnDestroy {
 
   centerMap() {
     this.centerOnUser(true); // Llama a la función que centra el mapa en la ubicación actual
+  }
+  goBack() {
+    this.location.back(); // Método para volver a la página anterior
   }
 }

@@ -39,6 +39,8 @@ export class HomeParentsPage implements OnInit {
     this.route.params.subscribe(params => {
       const userId = params['id'];
       this.loadParentInfo(userId);
+      this.subscribeToEstudiantes(userId);
+      this.subscribeToViajes();
     });
   }
 
@@ -113,12 +115,30 @@ export class HomeParentsPage implements OnInit {
   subscribeToViajes() {
     const viajesRef = collection(this.firestore, 'Viaje');
     onSnapshot(viajesRef, (snapshot) => {
-      snapshot.docChanges().forEach(change => {
-        if (change.type === 'added') {
-          // Aquí puedes manejar la lógica para agregar el viaje a los estudiantes
-          this.updateViajesForStudents(change.doc);
-        }
-      });
+        const viajesActivos = snapshot.docs
+            .map(doc => ({ id: doc.id, ...doc.data() } as Viaje))
+            .filter(viaje => !viaje.Terminado); // Filtrar viajes que no están terminados
+
+        // Actualiza los viajes de cada estudiante
+        this.parentInfo.estudiantes.forEach((student: any) => {
+            student.viajes = []; // Reiniciar la lista de viajes
+            viajesActivos.forEach(viaje => {
+                // Verificar si el estudiante está en el viaje
+                const pasajerosRef = collection(this.firestore, `Viaje/${viaje.id}/Pasajeros`);
+                getDocs(pasajerosRef).then(pasajerosSnapshot => {
+                    const isStudentOnTrip = pasajerosSnapshot.docs.some(pasajero => pasajero.id === student.id);
+                    if (isStudentOnTrip) {
+                        // Verificar si el viaje ya está agregado
+                        const viajeExistente = student.viajes.find((v: Viaje) => v.id === viaje.id);
+                        if (!viajeExistente) {
+                            student.viajes.push(viaje); // Agregar el viaje si el estudiante está en él y no está duplicado
+                        }
+                    }
+                });
+            });
+        });
+
+        console.log('Viajes activos actualizados:', viajesActivos);
     });
   }
 
@@ -135,6 +155,19 @@ export class HomeParentsPage implements OnInit {
         student.viajes.push(viajeData);
       }
     }
+  }
+
+  subscribeToEstudiantes(parentId: string) {
+    const studentsRef = collection(this.firestore, 'Alumnos');
+    const q = query(studentsRef, where('FK_ALApoderado', '==', parentId));
+
+    onSnapshot(q, (snapshot) => {
+      this.parentInfo.estudiantes = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+      console.log('Estudiantes actualizados:', this.parentInfo.estudiantes);
+    });
   }
 
   async editImage() {

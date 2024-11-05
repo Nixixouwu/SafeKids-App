@@ -1,0 +1,31 @@
+<ion-content [fullscreen]="true">
+  <ion-button fill="clear" class="return-button" (click)="goBack()">
+    <ion-icon name="arrow-back-outline"></ion-icon>
+  </ion-button>
+  <h1 class="app-title">Información Conductor</h1>
+
+
+
+
+  <div class="white-container">
+    <div class="driver-image">
+      <img [src]="driverInfo.Imagen || 'defaultImage'" alt="Foto del conductor">
+    </div>
+    <h2 class="driver-name">{{ driverInfo.Nombre }} {{ driverInfo.Apellido }}</h2>
+    <div class="info-boxes">
+      <div class="info-box">
+        <p class="info-label">Se unió en</p>
+        <p class="info-value">{{ driverInfo.Fecha_Admision }}</p>
+      </div>
+      <div class="info-box">
+        <p class="info-label">Edad</p>
+        <p class="info-value">{{ driverInfo.Edad }} Años</p>
+      </div>
+    </div>
+    <ion-button expand="full" (click)="openWhatsApp(driverInfo.Telefono)">
+      <ion-icon name="logo-whatsapp" slot="start"></ion-icon>
+      WhatsApp
+    </ion-button>
+    <ion-button expand="full" (click)="downloadAntecedentes()">Descargar Antecedentes</ion-button>
+  </div>
+</ion-content>

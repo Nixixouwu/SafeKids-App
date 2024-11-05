@@ -122,3 +122,15 @@ ion-button {
   align-items: center;
   height: 100%;
 }
+.return-button {
+  top: 10px;
+  left: 10px;
+  z-index: 1000;
+  --background: transparent;
+  --padding-start: 0;
+  --padding-end: 0;
+
+  ion-icon {
+    font-size: 3rem;
+  }
+}

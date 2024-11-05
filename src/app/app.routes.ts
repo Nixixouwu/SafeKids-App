@@ -38,9 +38,14 @@ export const routes: Routes = [
   {
     path: 'lista/:viajeId',
     loadComponent: () => import('./lista/lista.page').then( m => m.ListaPage)
-  },  {
+  },
+  {
     path: 'recover-password',
     loadComponent: () => import('./recover-password/recover-password.page').then( m => m.RecoverPasswordPage)
+  },
+  {
+    path: 'info-conductor/:id',
+    loadComponent: () => import('./info-conductor/info-conductor.page').then( m => m.InfoConductorPage)
   },
 
 

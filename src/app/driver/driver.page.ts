@@ -116,6 +116,12 @@ export class DriverPage implements OnInit {
 
   async iniciarViaje() {
     try {
+      // Detener el watcher de geolocalización si existe
+      if (this.watchId) {
+        Geolocation.clearWatch({ id: this.watchId });
+        this.watchId = null;
+      }
+
       // Verifica si las IDs existen antes de intentar acceder a ellas
       const busId = this.busInfo.ID_Placa;
       const schoolId = this.driverInfo.FK_COColegio;

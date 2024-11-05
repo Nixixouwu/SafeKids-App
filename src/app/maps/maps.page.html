@@ -1,12 +1,15 @@
 <ion-content>
+
   <div class="trip-info-overlay">
-    <h2>Seguimiento del Viaje</h2>
     <div class="driver-info">
+      <ion-button fill="clear" class="return-button" (click)="goBack()">
+        <ion-icon name="arrow-back-outline"></ion-icon>
+      </ion-button>
       <img [src]="driverInfo.Imagen || 'assets/img/conductor.jpg'" alt="Foto del conductor" class="driver-photo">
       <div class="driver-details">
         <p class="driver-name">{{ driverInfo.Nombre }} {{ driverInfo.Apellido }}</p>
         <p class="vehicle-id">{{ vehiclePlate }}</p>
-        <ion-button size="small" fill="outline">IR AL PERFIL</ion-button>
+        <ion-button size="small" fill="outline" [routerLink]="['/info-conductor', driverInfo.id]">IR AL PERFIL</ion-button>
       </div>
     </div>
   
