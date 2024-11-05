@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth';
 import { initializeApp } from 'firebase/app';
 import { environment } from '../../environments/environment';
 import { Router } from '@angular/router';
@@ -40,7 +40,15 @@ export class AuthService {
       throw error;
     }
   }
-
+  async sendPasswordReset(email: string) {
+    try {
+      await sendPasswordResetEmail(this.auth, email);
+      console.log('Correo de restablecimiento enviado a:', email);
+    } catch (error) {
+      console.error('Error al enviar el correo de restablecimiento:', error);
+      throw error; // Lanza el error para manejarlo en el componente
+    }
+  }
   private async fetchUserId(email: string) {
     const userDocRefApoderado = collection(this.firestore, 'Apoderado');
     const userDocRefConductor = collection(this.firestore, 'Conductor');
