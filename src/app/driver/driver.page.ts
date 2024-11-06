@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -7,9 +7,13 @@ import { Geolocation } from '@capacitor/geolocation';
 import { ref, set } from 'firebase/database';
 import { Database } from '@angular/fire/database';
 import { RouterModule } from '@angular/router';
-import * as allIcons from 'ionicons/icons';
 import { addIcons } from 'ionicons';
-
+import { 
+  busOutline, 
+  arrowBackOutline, 
+  locationOutline,
+  personCircleOutline 
+} from 'ionicons/icons';
 
 @Component({
   selector: 'app-driver',
@@ -18,7 +22,7 @@ import { addIcons } from 'ionicons';
   standalone: true,
   imports: [IonicModule, CommonModule, RouterModule]
 })
-export class DriverPage implements OnInit {
+export class DriverPage implements OnInit, OnDestroy {
   driverInfo: any = {};
   schoolInfo: any = {};
   busInfo: any = {};
@@ -30,16 +34,32 @@ export class DriverPage implements OnInit {
     private route: ActivatedRoute,
     private firestore: Firestore,
     private database: Database,
-    private router: Router // Asegúrate de inyectar el Router
+    private router: Router
   ) {
     this.db = database;
-    addIcons(allIcons);
+    addIcons({ 
+      busOutline, 
+      arrowBackOutline, 
+      locationOutline,
+      personCircleOutline 
+    });
   }
 
   ngOnInit() {
     this.route.params.subscribe(params => {
-      const userId = params['id']; // Obtiene el ID de la ruta
-      this.loadDriverInfo(userId);
+      let userId = params['id'];
+      
+      if (!userId) {
+        userId = localStorage.getItem('driverId');
+      }
+      
+      if (userId) {
+        localStorage.setItem('driverId', userId);
+        this.loadDriverInfo(userId);
+      } else {
+        console.error('No driver ID found');
+        this.router.navigate(['/login']);
+      }
     });
   }
 
@@ -51,32 +71,36 @@ export class DriverPage implements OnInit {
       
       if (driverDocSnapshot.exists()) {
         this.driverInfo = { id: driverDocSnapshot.id, ...driverDocSnapshot.data() };
-        this.driverImageUrl = this.driverInfo.Imagen || this.driverImageUrl;
+        this.driverImageUrl = this.driverInfo.Imagen || 'assets/img/avatar-default.png';
+        console.log('Driver Info loaded:', this.driverInfo);
 
-        // Realiza una consulta para obtener el bus asociado al conductor
-        const busesRef = collection(this.firestore, 'Bus');
-        const q = query(busesRef, where('FK_BUConductor', '==', this.driverInfo.RUT)); // Suponiendo que el RUT está en driverInfo
-        const querySnapshot = await getDocs(q);
+        // Load bus info
+        if (this.driverInfo.RUT) {
+          const busesRef = collection(this.firestore, 'Bus');
+          const q = query(busesRef, where('FK_BUConductor', '==', this.driverInfo.RUT));
+          const querySnapshot = await getDocs(q);
 
-        if (!querySnapshot.empty) {
-          const busData = querySnapshot.docs[0].data(); // Obtiene el primer bus encontrado
-          this.busInfo = { id: querySnapshot.docs[0].id, ...busData }; // Almacena la información del bus
-          console.log('Información del bus:', this.busInfo); // Para depuración
-        } else {
-          console.error('No se encontró información del bus para este conductor');
+          if (!querySnapshot.empty) {
+            this.busInfo = { id: querySnapshot.docs[0].id, ...querySnapshot.docs[0].data() };
+            console.log('Bus Info:', this.busInfo);
+          } else {
+            this.busInfo = {};
+            console.log('No bus assigned to this driver');
+          }
         }
 
-        const schoolId = this.driverInfo.FK_COColegio; // Obtener el ID del colegio
-        if (schoolId) {
-          await this.loadSchoolInfo(schoolId);
-        } else {
-          console.error('FK_COColegio no está definido');
+        // Load school info
+        if (this.driverInfo.FK_COColegio) {
+          await this.loadSchoolInfo(this.driverInfo.FK_COColegio);
         }
       } else {
         console.error('No se encontró información del conductor para este ID');
+        localStorage.removeItem('driverId');
+        this.router.navigate(['/login']);
       }
     } catch (error) {
-      console.error('Error al obtener el documento:', error);
+      console.error('Error loading driver info:', error);
+      this.router.navigate(['/login']);
     }
   }
 
@@ -88,7 +112,7 @@ export class DriverPage implements OnInit {
       
       if (busDocSnapshot.exists()) {
         this.busInfo = { ...busDocSnapshot.data() };
-        console.log('Información del bus:', this.busInfo); // Para depuración
+        console.log('Información del bus:', this.busInfo);
       } else {
         console.error('No se encontró información del bus para este ID');
       }
@@ -105,7 +129,7 @@ export class DriverPage implements OnInit {
       
       if (schoolDocSnapshot.exists()) {
         this.schoolInfo = { ...schoolDocSnapshot.data() };
-        console.log('Información de la escuela:', this.schoolInfo); // Para depuración
+        console.log('Información de la escuela:', this.schoolInfo);
       } else {
         console.error('No se encontró información de la escuela para este ID');
       }
@@ -200,5 +224,11 @@ export class DriverPage implements OnInit {
   updateLocationInFirebase(driverId: string, latitude: number, longitude: number) {
     const driverLocationRef = ref(this.db, `Users/${driverId}/Coords`); // Usa el ID del conductor
     set(driverLocationRef, { Latitude: latitude, Longitude: longitude });
+  }
+
+  ngOnDestroy() {
+    if (this.watchId) {
+      Geolocation.clearWatch({ id: this.watchId });
+    }
   }
 }

@@ -6,12 +6,14 @@
 
   <div class="white-container">
     <div class="profile-image">
-      <img [src]="imageUrl" alt="Foto de perfil">
+      <img [src]="imageUrl || 'assets/img/avatar-default.png'" alt="Foto de perfil">
       <ion-button (click)="selectImage()">
         <ion-icon name="camera-outline" slot="start"></ion-icon>
         Cambiar Foto
       </ion-button>
     </div>
+
+   
 
     <div class="password-section">
       <h2>Cambiar Contraseña</h2>

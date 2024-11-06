@@ -36,7 +36,8 @@ export class EditProfilePage implements OnInit {
   newPassword: string = '';
   confirmPassword: string = '';
   imageUrl: string = 'assets/img/avatar-default.png';
-  parentInfo: any;
+  userInfo: any;
+  userType: 'Conductor' | 'Apoderado' = 'Apoderado'; // Default to Apoderado
 
   constructor(
     private authService: AuthService,
@@ -51,16 +52,31 @@ export class EditProfilePage implements OnInit {
   ngOnInit() {
     this.route.params.subscribe(params => {
       this.userId = params['id'];
-      this.loadParentInfo();
+      // First try to load as Conductor
+      this.loadUserInfo('Conductor').then(exists => {
+        if (!exists) {
+          // If not found as Conductor, try Apoderado
+          this.userType = 'Apoderado';
+          this.loadUserInfo('Apoderado');
+        }
+      });
     });
   }
 
-  async loadParentInfo() {
-    const parentDocRef = doc(this.firestore, `Apoderado/${this.userId}`);
-    const parentDoc = await getDoc(parentDocRef);
-    if (parentDoc.exists()) {
-      this.parentInfo = { id: parentDoc.id, ...parentDoc.data() };
-      this.imageUrl = this.parentInfo.Imagen || this.imageUrl;
+  async loadUserInfo(collection: 'Conductor' | 'Apoderado'): Promise<boolean> {
+    const userDocRef = doc(this.firestore, `${collection}/${this.userId}`);
+    try {
+      const userDoc = await getDoc(userDocRef);
+      if (userDoc.exists()) {
+        this.userInfo = { id: userDoc.id, ...userDoc.data() };
+        this.imageUrl = this.userInfo.Imagen || this.imageUrl;
+        this.userType = collection;
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error('Error loading user info:', error);
+      return false;
     }
   }
 
@@ -101,13 +117,15 @@ export class EditProfilePage implements OnInit {
 
   async uploadImage(dataUrl: string) {
     try {
-      const storageRef = ref(this.storage, `profile-images/${this.userId}`);
-      await uploadString(storageRef, dataUrl, 'data_url');
+      // Create a reference to the correct folder based on user type
+      const folder = this.userType.toLowerCase() + 'es'; // 'conductores' or 'apoderados'
+      const storageRef = ref(this.storage, `${folder}/${this.userId}/${new Date().getTime()}_${Math.random().toString(36).substring(7)}.jpg`);
       
+      await uploadString(storageRef, dataUrl, 'data_url');
       const downloadUrl = await getDownloadURL(storageRef);
       
-      const parentDocRef = doc(this.firestore, `Apoderado/${this.userId}`);
-      await updateDoc(parentDocRef, {
+      const userDocRef = doc(this.firestore, `${this.userType}/${this.userId}`);
+      await updateDoc(userDocRef, {
         Imagen: downloadUrl
       });
 
@@ -119,6 +137,7 @@ export class EditProfilePage implements OnInit {
   }
 
   goBack() {
-    this.router.navigate(['/home-parents', this.userId]);
+    const route = this.userType === 'Conductor' ? '/driver' : '/home-parents';
+    this.router.navigate([route, this.userId]);
   }
 }

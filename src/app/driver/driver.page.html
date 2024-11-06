@@ -1,27 +1,43 @@
 <ion-content>
-  <ion-button-top fill="clear" class="return-button" [routerLink]="['/login']">
+  <ion-button fill="clear" class="return-button" [routerLink]="['/login']">
     <ion-icon name="arrow-back-outline"></ion-icon>
-  </ion-button-top>
+  </ion-button>
   <h1 class="app-title">SafeKIDS</h1>
+
   <div class="white-container">
     <div class="driver-info">
       <div class="driver-image">
         <img [src]="driverImageUrl || 'assets/img/avatar-default.png'" alt="Foto del conductor">
       </div>
       <div class="driver-details">
-        <p class="role">Conductor</p>
-        <h2 class="name">{{ driverInfo.Nombre }} {{ driverInfo.Apellido }}</h2>
-        <p class="vehicle-label">Vehículo</p>
-        <p class="vehicle-model"><strong>{{ busInfo.Modelo }}</strong></p>
-        <p class="vehicle-plate">{{ busInfo.ID_Placa }}</p>
+        <span class="label">Conductor</span>
+        <div class="details-content">
+          <h2 class="name">{{ driverInfo.Nombre }} {{ driverInfo.Apellido }}</h2>
+          
+          <span class="label vehicle-label">Vehículo</span>
+          <h2 class="name">{{ busInfo.Modelo || 'No asignado' }}</h2>
+          <p class="vehicle-text">{{ busInfo.ID_Placa || 'No asignada' }}</p>
+          
+          <button class="edit-image-btn" [routerLink]="['/edit-profile', driverInfo.id]">Editar Perfil 👤</button>
+        </div>
       </div>
     </div>
-    <div class="div">
-      <ion-button expand="full" (click)="iniciarViaje()">Iniciar Viaje</ion-button>
+
+    <div class="start-trip-container">
+      <ion-button expand="block" (click)="iniciarViaje()" class="start-trip-btn">
+        <ion-icon name="bus-outline" slot="start"></ion-icon>
+        Iniciar Viaje
+      </ion-button>
     </div>
-    <div class="school-info">
-      <h3 class="school-name">{{ schoolInfo.Nombre }}</h3>
-      <p class="school-address">{{ schoolInfo.Direccion }}</p>
+
+    <div class="school-container">
+      <div class="school-info">
+        <h3 class="school-name">{{ schoolInfo.Nombre }}</h3>
+        <div class="address-container">
+          <ion-icon name="location-outline"></ion-icon>
+          <p class="school-address">{{ schoolInfo.Direccion }}</p>
+        </div>
+      </div>
     </div>
   </div>
 </ion-content>

@@ -1,12 +1,12 @@
 .white-container {
   background-color: white;
-  border-radius: 10px;
-  padding: 20px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  margin: 20px;
-  height: calc(90% - 40px);
+  border-radius: 1.5rem;
+  padding: 1.2rem;
+  margin: 1rem;
+  height: 85%;
   display: flex;
   flex-direction: column;
+  overflow-y: auto;
   justify-content: space-between;
 }
 
@@ -46,103 +46,116 @@ ion-content {
 
 .driver-info {
   display: flex;
-  align-items: center;
-  margin-bottom: 20px;
+  align-items: flex-start;
+  margin-bottom: 1.3rem;
 }
 
 .driver-image {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  border: 2px solid #1e88e5;
-  margin-right: 15px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: #f0f0f0;
-}
+  margin-right: 1.3rem;
 
-.driver-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 3.5rem;
+  img {
+    width: 7rem;
+    height: 7rem;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #f1f1f1;
+  }
 }
 
 .driver-details {
+  display: flex;
+  flex-direction: column;
+
+  .label {
+    color: #666;
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .vehicle-label {
+    margin-top: 1rem;
+  }
+
+  .details-content {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .name {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin: 0;
+    color: #333;
+  }
+
+  .vehicle-text {
+    font-size: 1.2rem;
+    color: #666;
+    margin: 0.2rem 0;
+  }
+
+  .edit-image-btn {
+    background-color: #f0f0f0;
+    border-radius: 1rem;
+    padding: 0.7rem 1.2rem;
+    font-size: 1.2rem;
+    margin-top: 1.2rem;
+    align-self: flex-start;
+    color: #333;
+    border: none;
+    cursor: pointer;
+    
+    &:hover {
+      background-color: #e0e0e0;
+    }
+  }
+}
+
+.title-vehicle, .title-school {
+  font-size: 1.1rem;
   color: #333;
-}
-
-.role {
-  font-size: clamp(1.5rem, 2.5vw, 2rem); // Mínimo 1.5rem, preferido 2.5vw, máximo 2rem
-  color: #888;
-}
-
-.name {
-  font-size: clamp(2rem, 4vw, 2.5rem); // Mínimo 2rem, preferido 4vw, máximo 2.5rem
-  font-weight: bold;
-  color: #000;
-}
-
-.vehicle-label {
-  font-size: clamp(1.5rem, 2.5vw, 2rem); // Mínimo 1.5rem, preferido 2.5vw, máximo 2rem
-  color: #888;
-}
-
-.vehicle-model {
-  font-size: clamp(2rem, 4vw, 2.5rem); // Mínimo 2rem, preferido 4vw, máximo 2.5rem
-  font-weight: bold;
-  color: #000;
-}
-
-.vehicle-plate {
-  font-size: clamp(1.5rem, 2.5vw, 2rem); // Mínimo 1.5rem, preferido 2.5vw, máximo 2rem
-  color: #888;
-}
-
-.school-info {
-  margin-top: 20px;
   text-align: center;
+  margin-top: 1rem;
 }
 
-.school-name {
-  font-size: clamp(2rem, 3.5vw, 2.5rem); // Mínimo 2rem, preferido 3.5vw, máximo 2.5rem
-  font-weight: bold;
-  color: #1e88e5;
-}
-
-.school-address {
-  font-size: clamp(1.5rem, 2.5vw, 2rem); // Mínimo 1.5rem, preferido 2.5vw, máximo 2rem
-  color: #888;
-}
-
-.div {
-  margin-top: 20px;
-}
-
-ion-button {
-  background-color: #1e88e5;
-  color: white;
-  width: 100%;
-  border-radius: 5px;
-  padding: 10px;
-  font-size: 3vw;
-}
-
-ion-button:hover {
-  background-color: #1565c0;
-}
-
-.return-button {
-  margin-bottom: 20px;
-}
-
-.app-title {
-  color: white;
-  font-size: 2.5rem;
-  font-weight: bold;
+.school-container {
+  margin-top: 2rem;
+  background-color: #f8f9fa;
+  border-radius: 0.5rem;
+  padding: 1rem;
   text-align: center;
-  margin-bottom: 1.5rem;
+
+  .school-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+
+    .school-name {
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #333;
+      margin: 0 0 0.5rem 0;
+    }
+
+    .address-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+
+      ion-icon {
+        font-size: 1.2rem;
+        color: #1e88e5;
+      }
+
+      .school-address {
+        font-size: 1rem;
+        color: #666;
+        margin: 0;
+      }
+    }
+  }
 }
 
 // Responsividad
@@ -152,9 +165,9 @@ ion-button:hover {
     padding: 15px;
   }
 
-  .driver-image {
-    width: 60px;
-    height: 60px;
+  .driver-image img {
+    width: 5rem;
+    height: 5rem;
   }
 
   .name {
@@ -172,4 +185,69 @@ ion-button:hover {
   }
 
 
+}
+
+.vehicle-container {
+  background-color: #f0f0f0;
+  border-radius: 0.5rem;
+  padding: 1.2rem;
+  margin: 0.8rem 0;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.vehicle-info {
+  text-align: center;
+
+  .vehicle-model {
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: #333;
+    margin: 0 0 0.5rem 0;
+  }
+
+  .vehicle-plate {
+    font-size: 1.2rem;
+    color: #666;
+    margin: 0.3rem 0;
+    font-weight: 500;
+  }
+
+  .vehicle-capacity, .vehicle-year {
+    font-size: 1.1rem;
+    color: #666;
+    margin: 0.3rem 0;
+  }
+}
+
+.title-vehicle {
+  font-size: 1.2rem;
+  color: #333;
+  text-align: center;
+  margin-top: 1.2rem;
+  font-weight: 500;
+}
+
+.start-trip-container {
+  display: flex;
+  justify-content: center;
+  margin: auto;
+  padding: 2rem 1rem;
+  width: 100%;
+ 
+
+  ion-button {
+    --background: #1e88e5;
+    --background-hover: #1976d2;
+    --background-activated: #1976d2;
+    --color: white;
+    --border-radius: 2rem;
+    font-size: 1.2rem;
+    height: 3.5rem;
+    width: 100%;
+    
+    ion-icon {
+      margin-right: 0.5rem;
+      font-size: 1.3rem;
+    }
+  }
 }

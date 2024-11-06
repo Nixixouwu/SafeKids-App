@@ -39,7 +39,8 @@ ion-content {
 
   ion-button {
     background-color: #f0f0f0;
-    border-radius: 1rem;
+    border-radius: 25px;
+    --border-radius: 25px;
     padding: 0.7rem 1.2rem;
     font-size: 1.2rem;
     color: #333;
@@ -72,7 +73,8 @@ ion-content {
 
   ion-item {
     --background: #f0f0f0;
-    border-radius: 0.5rem;
+    border-radius: 5rem;
+    --border-radius: 25px;
     margin-bottom: 0.8rem;
     --padding-start: 1rem;
     --padding-end: 1rem;
@@ -94,18 +96,22 @@ ion-content {
 
   ion-button {
     margin-top: 1.5rem;
-    background-color: #f0f0f0;
-    border-radius: 1rem;
+    --border-radius: 25px;
+    border-radius: 25px;
     font-size: 1.2rem;
-    color: #333;
-    --background: #f0f0f0;
-    --background-hover: #e0e0e0;
-    --background-activated: #e0e0e0;
+    --background: #1e88e5;
+    --background-hover: #1976d2;
+    --background-activated: #1976d2;
     --box-shadow: none;
-    --color: #333;
+    --color: white;
     
     &:hover {
-      --background: #e0e0e0;
+      --background: #1976d2;
+    }
+
+    ion-icon {
+      margin-right: 0.5rem;
+      font-size: 1.3rem;
     }
   }
 }

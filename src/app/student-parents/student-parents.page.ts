@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonContent, IonHeader, IonTitle, IonToolbar, IonButton, IonIcon } from '@ionic/angular/standalone';
 import { RouterModule } from '@angular/router';
-import { arrowBackOutline } from 'ionicons/icons';
+import { arrowBackOutline, locationOutline, logoWhatsapp } from 'ionicons/icons';
 import { addIcons } from 'ionicons';
 import { Location } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
@@ -21,7 +21,7 @@ export class StudentParentsPage implements OnInit {
   defaultImage: string = 'assets/img/avatar-default.png'; // Imagen por defecto
 
   constructor(private route: ActivatedRoute, private firestore: Firestore, private location: Location) {
-    addIcons({arrowBackOutline});
+    addIcons({arrowBackOutline, locationOutline, logoWhatsapp});
   }
 
   ngOnInit() {
@@ -40,16 +40,27 @@ export class StudentParentsPage implements OnInit {
       if (studentDocSnapshot.exists()) {
         this.studentInfo = { id: studentDocSnapshot.id, ...studentDocSnapshot.data() };
 
-        // Recuperar información del colegio
-        const schoolId = this.studentInfo.FK_ALColegio; // Obtener el ID del colegio
+        // Load school info
+        const schoolId = this.studentInfo.FK_ALColegio;
         if (schoolId) {
           const schoolDocRef = doc(this.firestore, `Colegio/${schoolId}`);
           const schoolDocSnapshot = await getDoc(schoolDocRef);
           
           if (schoolDocSnapshot.exists()) {
-            this.studentInfo.colegio = { id: schoolDocSnapshot.id, ...schoolDocSnapshot.data() }; // Almacenar información del colegio
+            this.studentInfo.colegio = { id: schoolDocSnapshot.id, ...schoolDocSnapshot.data() };
+          }
+        }
+
+        // Load parent info
+        const parentId = this.studentInfo.FK_ALApoderado;
+        if (parentId) {
+          const parentDocRef = doc(this.firestore, `Apoderado/${parentId}`);
+          const parentDocSnapshot = await getDoc(parentDocRef);
+          
+          if (parentDocSnapshot.exists()) {
+            this.studentInfo.apoderado = { id: parentDocSnapshot.id, ...parentDocSnapshot.data() };
           } else {
-            console.error('No se encontró información del colegio para este ID',schoolId);
+            console.error('No se encontró información del apoderado para este ID', parentId);
           }
         }
       } else {
@@ -62,5 +73,12 @@ export class StudentParentsPage implements OnInit {
 
   goBack() {
     this.location.back(); // Método para volver a la página anterior
+  }
+
+  openWhatsApp(telefono: string) {
+    if (telefono) {
+      const url = `https://wa.me/${telefono}`;
+      window.open(url, '_blank');
+    }
   }
 }

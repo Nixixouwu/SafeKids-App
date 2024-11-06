@@ -29,6 +29,20 @@
         </div>
       </div>
     </div>
+    <div class="parent-info-box">
+      <h3 class="section-title">Apoderado</h3>
+      <div class="parent-content">
+        <div class="parent-image">
+          <img [src]="studentInfo.apoderado?.Imagen || defaultImage" alt="Parent Image">
+        </div>
+        <div class="parent-details">
+          <h3 class="parent-name">{{ studentInfo.apoderado?.Nombre }} {{ studentInfo.apoderado?.Apellido }}</h3>
+        </div>
+        <ion-button class="whatsapp-btn" (click)="openWhatsApp(studentInfo.apoderado?.Telefono)">
+          <ion-icon name="logo-whatsapp"></ion-icon>
+        </ion-button>
+      </div>
+    </div>
     <div class="school-info-box">
       <h3 class="school-name">{{ studentInfo.colegio?.Nombre }}</h3>
       <p class="school-address">

@@ -118,12 +118,12 @@ ion-content {
     font-size: 1.2rem;
     font-weight: bold;
     margin-bottom: 0.5rem;
+    color: #1e88e5;
   }
 
   .school-info-box {
     background-color: #f0f0f0;
     border-radius: 0.5rem;
-    margin-top: auto;
     width: 100%;
     text-align: center;
 
@@ -131,6 +131,7 @@ ion-content {
       font-size: 1.4rem;
       font-weight: bold;
       margin-bottom: 0.5rem;
+      color: #1e88e5;
     }
 
     .school-address {
@@ -142,6 +143,66 @@ ion-content {
 
       ion-icon {
         color: #e51e1e;
+      }
+    }
+  }
+
+  .parent-info-box {
+    background-color: #f0f0f0;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    margin: 0.5rem 0;
+    
+    .section-title {
+      font-size: 1rem;
+      color: #666;
+
+      text-align: center;
+    }
+
+    .parent-content {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+
+      .whatsapp-btn {
+        --padding-start: 0;
+        --padding-end: 0;
+        --border-radius: 50%;
+        height: 40px;
+        width: 40px;
+        min-width: 40px;
+        --background: #25D366;
+        margin: 0;
+        
+        ion-icon {
+          font-size: 1.5rem;
+          margin: 0;
+        }
+      }
+    }
+
+    .parent-image {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      overflow: hidden;
+      
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+
+    .parent-details {
+      flex: 1;
+      
+      .parent-name {
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: #333;
+        margin: 0;
       }
     }
   }
