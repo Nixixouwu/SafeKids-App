@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth';
+import { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail, updatePassword, EmailAuthProvider, reauthenticateWithCredential } from 'firebase/auth';
 import { initializeApp } from 'firebase/app';
 import { environment } from '../../environments/environment';
 import { Router } from '@angular/router';
@@ -98,5 +98,21 @@ export class AuthService {
 
   getUserId(): string | null {
     return this.userId;
+  }
+
+  async updatePassword(currentPassword: string, newPassword: string) {
+    const user = await this.auth.currentUser;
+    if (!user || !user.email) throw new Error('No user logged in');
+
+    const credential = EmailAuthProvider.credential(user.email, currentPassword);
+    
+    try {
+      // Re-authenticate user before changing password
+      await reauthenticateWithCredential(user, credential);
+      // Update password
+      await updatePassword(user, newPassword);
+    } catch (error) {
+      throw error;
+    }
   }
 }

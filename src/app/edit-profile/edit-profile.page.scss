@@ -1,0 +1,126 @@
+ion-content {
+  --background: linear-gradient(90deg, #4dd0e1, #1e3ce5);
+  --padding-start: 0;
+  --padding-end: 0;
+}
+
+.app-title {
+  color: white;
+  font-size: 2.5rem;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.white-container {
+  background-color: white;
+  border-radius: 1.5rem;
+  padding: 1.2rem;
+  margin: 1rem;
+  height: 85%;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.profile-image {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 1.3rem;
+
+  img {
+    width: 7rem;
+    height: 7rem;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 1rem;
+  }
+
+  ion-button {
+    background-color: #f0f0f0;
+    border-radius: 1rem;
+    padding: 0.7rem 1.2rem;
+    font-size: 1.2rem;
+    color: #333;
+    --background: #f0f0f0;
+    --background-hover: #e0e0e0;
+    --background-activated: #e0e0e0;
+    --box-shadow: none;
+    --color: #333;
+    
+    &:hover {
+      --background: #e0e0e0;
+    }
+  }
+}
+
+.password-section {
+  padding: 0 0.5rem;
+
+  h2 {
+    font-size: 1.1rem;
+    color: #333;
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+
+  ion-list {
+    background: transparent;
+    padding: 0;
+  }
+
+  ion-item {
+    --background: #f0f0f0;
+    border-radius: 0.5rem;
+    margin-bottom: 0.8rem;
+    --padding-start: 1rem;
+    --padding-end: 1rem;
+    --inner-padding-end: 0;
+    --border-color: transparent;
+
+    ion-input {
+      --padding-start: 0.5rem;
+      --padding-end: 0.5rem;
+      font-size: 1.2rem;
+      --color: #333;
+    }
+
+    ion-icon {
+      color: #333;
+      margin-right: 0.5rem;
+    }
+  }
+
+  ion-button {
+    margin-top: 1.5rem;
+    background-color: #f0f0f0;
+    border-radius: 1rem;
+    font-size: 1.2rem;
+    color: #333;
+    --background: #f0f0f0;
+    --background-hover: #e0e0e0;
+    --background-activated: #e0e0e0;
+    --box-shadow: none;
+    --color: #333;
+    
+    &:hover {
+      --background: #e0e0e0;
+    }
+  }
+}
+
+.return-button {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 1000;
+  --color: #ffffff;
+  --background: transparent;
+  --padding-start: 0;
+  --padding-end: 0;
+
+  ion-icon {
+    font-size: 3rem;
+  }
+}

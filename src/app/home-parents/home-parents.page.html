@@ -13,7 +13,7 @@
         <span class="label">Apoderado</span>
         <div class="details-content">
           <h2 class="name">{{ parentInfo.Nombre }} {{ parentInfo.Apellido }}</h2>
-          <button class="edit-image-btn" (click)="editImage()">Editar Imagen 📝</button>
+          <button class="edit-image-btn" [routerLink]="['/edit-profile', parentInfo.id]">Editar Perfil 👤</button>
         </div>
       </div>
     </div>

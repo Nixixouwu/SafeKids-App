@@ -70,6 +70,12 @@ ion-content {
       margin-top: 0.8rem;
       align-self: flex-start;
       color: #333;
+      border: none;
+      cursor: pointer;
+      
+      &:hover {
+        background-color: #e0e0e0;
+      }
     }
   }
   

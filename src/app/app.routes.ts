@@ -47,6 +47,11 @@ export const routes: Routes = [
     path: 'info-conductor/:id',
     loadComponent: () => import('./info-conductor/info-conductor.page').then( m => m.InfoConductorPage)
   },
+  {
+    path: 'edit-profile/:id',
+    loadComponent: () => import('./edit-profile/edit-profile.page').then(m => m.EditProfilePage)
+  },
+
 
 
 
