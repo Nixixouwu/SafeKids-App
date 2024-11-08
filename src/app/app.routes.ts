@@ -51,6 +51,15 @@ export const routes: Routes = [
     path: 'edit-profile/:id',
     loadComponent: () => import('./edit-profile/edit-profile.page').then(m => m.EditProfilePage)
   },
+  {
+    path: 'student-qr',
+    loadComponent: () => import('./student-qr/student-qr.page').then(m => m.StudentQrPage)
+  },
+  {
+    path: 'student-qr/:id',
+    loadComponent: () => import('./student-qr/student-qr.page').then(m => m.StudentQrPage)
+  }
+
 
 
 

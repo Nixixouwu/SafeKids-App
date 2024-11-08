@@ -1,0 +1,42 @@
+<ion-content>
+  <ion-button fill="clear" class="return-button" (click)="goBack()">
+    <ion-icon name="arrow-back-outline"></ion-icon>
+  </ion-button>
+  <h1 class="app-title">{{ isScanning ? 'Confirmar Estudiante' : 'Código QR del Alumno' }}</h1>
+
+  <div class="white-container">
+    <div class="student-info">
+      <div class="student-image">
+        <img [src]="studentInfo.Imagen || defaultImage" alt="Student Image">
+      </div>
+
+      <h2 class="student-name">{{ studentInfo.Nombre }} {{ studentInfo.Apellido }}</h2>
+      
+      <div class="info-boxes">
+        <div class="info-box">
+          <p class="info-label">Edad</p>
+          <p class="info-value">{{ studentInfo.Edad }} Años</p>
+        </div>
+        <div class="info-box">
+          <p class="info-label">Curso</p>
+          <p class="info-value">{{ studentInfo.Curso }}</p>
+        </div>
+      </div>
+
+      <div [ngClass]="{'qr-container': !isScanning, 'confirm-container': isScanning}">
+        <ng-container *ngIf="!isScanning">
+          <img [src]="qrCodeUrl" *ngIf="qrCodeUrl" alt="QR Code">
+        </ng-container>
+        
+        <ion-button *ngIf="isScanning" 
+                    expand="block" 
+                    color="success" 
+                    (click)="updateStudentStatus(studentInfo.RUT)"
+                    class="confirm-button">
+          <ion-icon name="checkmark-circle-outline" slot="start"></ion-icon>
+          Confirmar Abordaje
+        </ion-button>
+      </div>
+    </div>
+  </div>
+</ion-content>

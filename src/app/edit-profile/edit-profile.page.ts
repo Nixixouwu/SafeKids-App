@@ -118,7 +118,7 @@ export class EditProfilePage implements OnInit {
   async uploadImage(dataUrl: string) {
     try {
       // Create a reference to the correct folder based on user type
-      const folder = this.userType.toLowerCase() + 'es'; // 'conductores' or 'apoderados'
+      const folder = this.userType === 'Apoderado' ? 'apoderados' : 'conductores';
       const storageRef = ref(this.storage, `${folder}/${this.userId}/${new Date().getTime()}_${Math.random().toString(36).substring(7)}.jpg`);
       
       await uploadString(storageRef, dataUrl, 'data_url');

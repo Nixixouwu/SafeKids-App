@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonContent, IonHeader, IonTitle, IonToolbar, IonButton, IonIcon } from '@ionic/angular/standalone';
-import { RouterModule } from '@angular/router';
-import { arrowBackOutline, locationOutline, logoWhatsapp } from 'ionicons/icons';
+import { RouterModule, Router } from '@angular/router';
+import { arrowBackOutline, locationOutline, logoWhatsapp, qrCodeOutline } from 'ionicons/icons';
 import { addIcons } from 'ionicons';
 import { Location } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
@@ -20,8 +20,8 @@ export class StudentParentsPage implements OnInit {
   studentInfo: any = {}; // Para almacenar la información del estudiante
   defaultImage: string = 'assets/img/avatar-default.png'; // Imagen por defecto
 
-  constructor(private route: ActivatedRoute, private firestore: Firestore, private location: Location) {
-    addIcons({arrowBackOutline, locationOutline, logoWhatsapp});
+  constructor(private route: ActivatedRoute, private firestore: Firestore, private location: Location, private router: Router) {
+    addIcons({arrowBackOutline,locationOutline,logoWhatsapp,qrCodeOutline});
   }
 
   ngOnInit() {
@@ -80,5 +80,13 @@ export class StudentParentsPage implements OnInit {
       const url = `https://wa.me/${telefono}`;
       window.open(url, '_blank');
     }
+  }
+
+  viewStudentQR(studentRut: string) {
+    this.router.navigate(['/student-qr'], {
+      queryParams: {
+        id: studentRut
+      }
+    });
   }
 }

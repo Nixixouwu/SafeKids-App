@@ -9,5 +9,8 @@
     <ion-icon [name]="pasajero.Abordo ? 'checkmark-circle' : 'close-outline'" slot="end"></ion-icon>
   </div>
   <ion-button expand="full" (click)="detenerViaje()">DETENER VIAJE</ion-button>
-  <ion-button expand="full" (click)="scanQRCode()">ESCANEAR QR</ion-button>
+  <ion-button expand="full" (click)="scanStudentQR()">
+    <ion-icon name="qr-code-outline"></ion-icon>
+    Escanear QR
+  </ion-button>
 </ion-content>
