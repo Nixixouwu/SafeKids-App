@@ -2,8 +2,8 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Firestore, doc, getDoc, setDoc, collection, query, getDocs, where } from '@angular/fire/firestore';
-import { Geolocation } from '@capacitor/geolocation';
+import { Firestore, doc, getDoc, setDoc, collection, query, getDocs, where, limit } from '@angular/fire/firestore';
+import { Geolocation, PermissionStatus } from '@capacitor/geolocation';
 import { ref, set } from 'firebase/database';
 import { Database } from '@angular/fire/database';
 import { RouterModule } from '@angular/router';
@@ -14,6 +14,10 @@ import {
   locationOutline,
   personCircleOutline 
 } from 'ionicons/icons';
+import { AlertController } from '@ionic/angular';
+import { App } from '@capacitor/app';
+
+declare const cordova: any;
 
 @Component({
   selector: 'app-driver',
@@ -34,7 +38,8 @@ export class DriverPage implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private firestore: Firestore,
     private database: Database,
-    private router: Router
+    private router: Router,
+    private alertController: AlertController
   ) {
     this.db = database;
     addIcons({ 
@@ -138,75 +143,188 @@ export class DriverPage implements OnInit, OnDestroy {
     }
   }
 
+  async presentErrorAlert(message: string) {
+    const alert = await this.alertController.create({
+      header: 'Error al iniciar viaje',
+      message: message,
+      buttons: ['OK'],
+      cssClass: 'custom-alert',
+      mode: 'ios'
+    });
+
+    await alert.present();
+  }
+
+  async checkAndRequestLocation() {
+    try {
+      // First check if there's an active trip
+      const viajesRef = collection(this.firestore, 'Viaje');
+      const q = query(
+        viajesRef,
+        where('FK_VIConductor', '==', this.driverInfo.id),
+        where('Terminado', '==', false),
+        limit(1)
+      );
+
+      const querySnapshot = await getDocs(q);
+
+      if (!querySnapshot.empty) {
+        const alert = await this.alertController.create({
+          header: 'Viaje en curso',
+          message: 'Ya tienes un viaje activo. No puedes iniciar otro viaje hasta terminar el actual.',
+          buttons: [
+            {
+              text: 'Cancelar',
+              role: 'cancel',
+              cssClass: 'alert-button-cancel'
+            },
+            {
+              text: 'Ver viaje actual',
+              handler: () => {
+                const viajeActual = querySnapshot.docs[0];
+                this.router.navigate(['/lista', viajeActual.id]);
+              }
+            }
+          ],
+          cssClass: 'custom-alert',
+          mode: 'ios'
+        });
+
+        await alert.present();
+        return false;
+      }
+
+      try {
+        await Geolocation.getCurrentPosition();
+        return true;
+      } catch (error) {
+        console.error('Error getting location:', error);
+        
+        const alert = await this.alertController.create({
+          header: 'GPS Desactivado',
+          message: 'El GPS está desactivado. Por favor, actívelo para iniciar el viaje.',
+          buttons: [
+            {
+              text: 'Cancelar',
+              role: 'cancel',
+              cssClass: 'alert-button-cancel'
+            },
+            {
+              text: 'Activar GPS',
+              handler: () => {
+                if ((window as any).cordova) {
+                  cordova.plugins.diagnostic.switchToLocationSettings();
+                } else {
+                  console.log('Cannot open settings in browser');
+                }
+              }
+            }
+          ],
+          cssClass: 'custom-alert',
+          mode: 'ios'
+        });
+
+        await alert.present();
+        return false;
+      }
+    } catch (error) {
+      console.error('Error checking location:', error);
+      await this.presentErrorAlert('Error al verificar la ubicación');
+      return false;
+    }
+  }
+
   async iniciarViaje() {
     try {
-      // Detener el watcher de geolocalización si existe
+      const locationEnabled = await this.checkAndRequestLocation();
+      if (!locationEnabled) {
+        return;
+      }
+
+      // Verify bus assignment
+      if (!this.busInfo.ID_Placa) {
+        await this.presentErrorAlert('No hay un bus asignado para iniciar el viaje');
+        return;
+      }
+
+      // Verify school assignment
+      if (!this.driverInfo.FK_COColegio) {
+        await this.presentErrorAlert('No hay un colegio asignado para iniciar el viaje');
+        return;
+      }
+
+      // Check for existing watchId
       if (this.watchId) {
         Geolocation.clearWatch({ id: this.watchId });
         this.watchId = null;
       }
 
-      // Verifica si las IDs existen antes de intentar acceder a ellas
       const busId = this.busInfo.ID_Placa;
       const schoolId = this.driverInfo.FK_COColegio;
 
+      // Verify IDs
       if (!busId || !schoolId) {
-        console.error('No se puede iniciar el viaje: la ID del bus o del colegio no está definida.');
+        await this.presentErrorAlert('Faltan datos necesarios para iniciar el viaje');
         return;
       }
 
-      // Carga la información del bus y la escuela
-      await this.loadBusInfo(busId);
-      await this.loadSchoolInfo(schoolId);
+      try {
+        // Get current position
+        const position = await Geolocation.getCurrentPosition();
+        
+        const viajeId = `${this.driverInfo.id}_${new Date().toISOString()}`; // Genera un ID único
+        const viajeRef = doc(this.firestore, `Viaje/${viajeId}`);
 
-      const position = await Geolocation.getCurrentPosition();
-      const viajeId = `${this.driverInfo.id}_${new Date().toISOString()}`; // Genera un ID único
-      const viajeRef = doc(this.firestore, `Viaje/${viajeId}`);
-
-      // Verifica que la información del colegio esté definida
-      if (!this.schoolInfo.id) {
-        console.error('No se puede iniciar el viaje: la ID del colegio no está definida.', this.schoolInfo.id);
-        return;
-      }
-
-      // Crea el viaje en la base de datos
-      await setDoc(viajeRef, {
-        FK_VIConductor: this.driverInfo.id,
-        FK_VICondNombre: this.driverInfo.Nombre,
-        FK_VICondApellido: this.driverInfo.Apellido,
-        FK_VIBus: this.busInfo.ID_Placa, // Almacena la ID del bus
-        FK_VIColegio: this.schoolInfo.id,
-        Terminado: false,  // Almacena la ID del colegio
-        inicio: {
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-          timestamp: new Date().toISOString()
+        // Verifica que la información del colegio esté definida
+        if (!this.schoolInfo.id) {
+          console.error('No se puede iniciar el viaje: la ID del colegio no está definida.', this.schoolInfo.id);
+          return;
         }
-      });
 
-      console.log('Viaje creado con ID:', viajeId);
+        // Crea el viaje en la base de datos
+        await setDoc(viajeRef, {
+          FK_VIConductor: this.driverInfo.id,
+          FK_VICondNombre: this.driverInfo.Nombre,
+          FK_VICondApellido: this.driverInfo.Apellido,
+          FK_VIBus: this.busInfo.ID_Placa, // Almacena la ID del bus
+          FK_VIColegio: this.schoolInfo.id,
+          Terminado: false,  // Almacena la ID del colegio
+          inicio: {
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+            timestamp: new Date().toISOString()
+          }
+        });
 
-      // Obtener alumnos del mismo colegio
-      const alumnosRef = collection(this.firestore, 'Alumnos');
-      const q = query(alumnosRef, where('FK_ALColegio', '==', schoolId));
-      const querySnapshot = await getDocs(q);
+        console.log('Viaje creado con ID:', viajeId);
 
-      for (const docSnapshot of querySnapshot.docs) {
-        const alumnoData = docSnapshot.data(); // Usa data() para obtener los datos
-        const pasajero = {
-          nombre: alumnoData['Nombre'],
-          apellido: alumnoData['Apellido'], // Asegúrate de que 'Apellido' sea el campo correcto
-          FK_PAAlumno: docSnapshot.id,
-          Abordo: false
-        };
-        const pasajeroDocRef = doc(this.firestore, `Viaje/${viajeId}/Pasajeros/${docSnapshot.id}`); // Usa el ID del documento
-        await setDoc(pasajeroDocRef, pasajero);
+        // Obtener alumnos del mismo colegio
+        const alumnosRef = collection(this.firestore, 'Alumnos');
+        const q = query(alumnosRef, where('FK_ALColegio', '==', schoolId));
+        const querySnapshot = await getDocs(q);
+
+        for (const docSnapshot of querySnapshot.docs) {
+          const alumnoData = docSnapshot.data(); // Usa data() para obtener los datos
+          const pasajero = {
+            nombre: alumnoData['Nombre'],
+            apellido: alumnoData['Apellido'], // Asegúrate de que 'Apellido' sea el campo correcto
+            FK_PAAlumno: docSnapshot.id,
+            Abordo: false
+          };
+          const pasajeroDocRef = doc(this.firestore, `Viaje/${viajeId}/Pasajeros/${docSnapshot.id}`); // Usa el ID del documento
+          await setDoc(pasajeroDocRef, pasajero);
+        }
+
+        this.startLocationUpdates();
+        this.router.navigate(['/lista', viajeId]);
+      } catch (locationError) {
+        await this.presentErrorAlert('Error al obtener la ubicación. Por favor, verifique que el GPS esté activado');
+        return;
       }
 
-      this.startLocationUpdates();
-      this.router.navigate(['/lista', viajeId]);
-    } catch (e) {
-      console.error('Error al iniciar el viaje', e);
+    } catch (error) {
+      console.error('Error al iniciar el viaje:', error);
+      await this.presentErrorAlert('Ocurrió un error al iniciar el viaje. Por favor, inténtelo nuevamente');
     }
   }
 
@@ -224,6 +342,45 @@ export class DriverPage implements OnInit, OnDestroy {
   updateLocationInFirebase(driverId: string, latitude: number, longitude: number) {
     const driverLocationRef = ref(this.db, `Users/${driverId}/Coords`); // Usa el ID del conductor
     set(driverLocationRef, { Latitude: latitude, Longitude: longitude });
+  }
+
+  async verViajeActual() {
+    try {
+      const viajesRef = collection(this.firestore, 'Viaje');
+      const q = query(
+        viajesRef,
+        where('FK_VIConductor', '==', this.driverInfo.id),
+        where('Terminado', '==', false),
+        limit(1)
+      );
+
+      const querySnapshot = await getDocs(q);
+
+      if (!querySnapshot.empty) {
+        const viajeActual = querySnapshot.docs[0];
+        this.router.navigate(['/lista', viajeActual.id]);
+      } else {
+        // Show alert if no active trip found
+        const alert = await this.alertController.create({
+          header: 'No hay viaje activo',
+          message: 'No se encontró ningún viaje en curso.',
+          buttons: ['OK'],
+          cssClass: 'custom-alert',
+          mode: 'ios'
+        });
+        await alert.present();
+      }
+    } catch (error) {
+      console.error('Error al buscar viaje actual:', error);
+      const alert = await this.alertController.create({
+        header: 'Error',
+        message: 'Ocurrió un error al buscar el viaje actual.',
+        buttons: ['OK'],
+        cssClass: 'custom-alert',
+        mode: 'ios'
+      });
+      await alert.present();
+    }
   }
 
   ngOnDestroy() {

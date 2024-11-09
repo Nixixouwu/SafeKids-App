@@ -5,7 +5,16 @@ import { IonContent, IonHeader, IonTitle, IonToolbar, IonButton, IonIcon, IonInp
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { RouterModule, ActivatedRoute, Router } from '@angular/router';
 import { addIcons } from 'ionicons';
-import { arrowBackOutline, cameraOutline, lockClosedOutline, keyOutline, checkmarkCircleOutline, saveOutline } from 'ionicons/icons';
+import { 
+  arrowBackOutline, 
+  cameraOutline, 
+  lockClosedOutline, 
+  keyOutline, 
+  checkmarkCircleOutline, 
+  saveOutline,
+  eyeOutline,
+  eyeOffOutline 
+} from 'ionicons/icons';
 import { AuthService } from '../services/auth.service';
 import { Firestore, doc, updateDoc, getDoc } from '@angular/fire/firestore';
 import { Storage, ref, uploadString, getDownloadURL } from '@angular/fire/storage';
@@ -38,6 +47,9 @@ export class EditProfilePage implements OnInit {
   imageUrl: string = 'assets/img/avatar-default.png';
   userInfo: any;
   userType: 'Conductor' | 'Apoderado' = 'Apoderado'; // Default to Apoderado
+  showCurrentPassword: boolean = false;
+  showNewPassword: boolean = false;
+  showConfirmPassword: boolean = false;
 
   constructor(
     private authService: AuthService,
@@ -46,7 +58,16 @@ export class EditProfilePage implements OnInit {
     private route: ActivatedRoute,
     private router: Router
   ) {
-    addIcons({arrowBackOutline,cameraOutline,lockClosedOutline,keyOutline,checkmarkCircleOutline,saveOutline});
+    addIcons({
+      arrowBackOutline,
+      cameraOutline,
+      lockClosedOutline,
+      keyOutline,
+      checkmarkCircleOutline,
+      saveOutline,
+      eyeOutline,
+      eyeOffOutline
+    });
   }
 
   ngOnInit() {
@@ -139,5 +160,17 @@ export class EditProfilePage implements OnInit {
   goBack() {
     const route = this.userType === 'Conductor' ? '/driver' : '/home-parents';
     this.router.navigate([route, this.userId]);
+  }
+
+  toggleCurrentPassword() {
+    this.showCurrentPassword = !this.showCurrentPassword;
+  }
+
+  toggleNewPassword() {
+    this.showNewPassword = !this.showNewPassword;
+  }
+
+  toggleConfirmPassword() {
+    this.showConfirmPassword = !this.showConfirmPassword;
   }
 }

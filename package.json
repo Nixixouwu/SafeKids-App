@@ -33,6 +33,7 @@
     "@capacitor/status-bar": "6.0.1",
     "@ionic/angular": "^8.0.0",
     "@types/googlemaps": "^3.43.3",
+    "cordova.plugins.diagnostic": "^7.2.1",
     "firebase": "^10.14.1",
     "ionicons": "^7.2.1",
     "jspdf": "^2.5.2",

@@ -92,6 +92,18 @@ ion-content {
       color: #333;
       margin-right: 0.5rem;
     }
+
+    .password-icon {
+      font-size: 1.2rem;
+      color: #666;
+      padding: 0 8px;
+      cursor: pointer;
+      margin-left: 8px;
+      
+      &:active {
+        opacity: 0.7;
+      }
+    }
   }
 
   ion-button {

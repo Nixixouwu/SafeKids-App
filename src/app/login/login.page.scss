@@ -115,6 +115,17 @@ ion-item {
     font-size: 0.9rem; // Smaller font size for input text
     --color: #333; // Set a specific color for input text
   }
+
+  .password-icon {
+    font-size: 1.2rem;
+    color: #666;
+    padding: 0 8px;
+    cursor: pointer;
+    
+    &:active {
+      opacity: 0.7;
+    }
+  }
 }
 
 .login-button {
@@ -199,5 +210,27 @@ ion-item {
   left: 3vw;
   opacity: 0.7;
   z-index: 1;
+}
+
+// Add this at the end of your existing styles
+:host {
+  .custom-alert {
+    --background: white;
+    --height: auto;
+    
+    .alert-title {
+      color: #1e3ce5;
+      font-weight: bold;
+    }
+    
+    .alert-message {
+      color: #666;
+    }
+
+    .alert-button {
+      color: #1e3ce5;
+      font-weight: bold;
+    }
+  }
 }
 

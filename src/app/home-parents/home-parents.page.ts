@@ -98,16 +98,17 @@ export class HomeParentsPage implements OnInit {
       const pasajerosRef = collection(this.firestore, `Viaje/${viajeId}/Pasajeros`);
       const pasajerosSnapshot = await getDocs(pasajerosRef);
 
-      const isStudentOnTrip = pasajerosSnapshot.docs.some(pasajero => pasajero.id === student.id);
+      // Check if student is on trip AND is aboard
+      const studentPasajero = pasajerosSnapshot.docs.find(pasajero => pasajero.id === student.id);
+      const isStudentAboard = studentPasajero?.data()?.[`Abordo`] === true;
 
-      if (isStudentOnTrip) {
+      if (studentPasajero && isStudentAboard) {
         const viajeData = { id: viajeId, ...viajeDoc.data() } as Viaje;
 
         if (!viajeData.Terminado) {
-
           student.viajes.push(viajeData);
         }
-        break; // Salir después de encontrar el primer viaje no terminado
+        break;
       }
     }
   }
@@ -115,30 +116,27 @@ export class HomeParentsPage implements OnInit {
   subscribeToViajes() {
     const viajesRef = collection(this.firestore, 'Viaje');
     onSnapshot(viajesRef, (snapshot) => {
-        const viajesActivos = snapshot.docs
-            .map(doc => ({ id: doc.id, ...doc.data() } as Viaje))
-            .filter(viaje => !viaje.Terminado); // Filtrar viajes que no están terminados
+      const viajesActivos = snapshot.docs
+        .map(doc => ({ id: doc.id, ...doc.data() } as Viaje))
+        .filter(viaje => !viaje.Terminado);
 
-        // Actualiza los viajes de cada estudiante
-        this.parentInfo.estudiantes.forEach((student: any) => {
-            student.viajes = []; // Reiniciar la lista de viajes
-            viajesActivos.forEach(viaje => {
-                // Verificar si el estudiante está en el viaje
-                const pasajerosRef = collection(this.firestore, `Viaje/${viaje.id}/Pasajeros`);
-                getDocs(pasajerosRef).then(pasajerosSnapshot => {
-                    const isStudentOnTrip = pasajerosSnapshot.docs.some(pasajero => pasajero.id === student.id);
-                    if (isStudentOnTrip) {
-                        // Verificar si el viaje ya está agregado
-                        const viajeExistente = student.viajes.find((v: Viaje) => v.id === viaje.id);
-                        if (!viajeExistente) {
-                            student.viajes.push(viaje); // Agregar el viaje si el estudiante está en él y no está duplicado
-                        }
-                    }
-                });
-            });
+      this.parentInfo.estudiantes.forEach((student: any) => {
+        student.viajes = [];
+        viajesActivos.forEach(viaje => {
+          const pasajerosRef = collection(this.firestore, `Viaje/${viaje.id}/Pasajeros`);
+          getDocs(pasajerosRef).then(pasajerosSnapshot => {
+            const studentPasajero = pasajerosSnapshot.docs.find(pasajero => pasajero.id === student.id);
+            const isStudentAboard = studentPasajero?.data()?.[`Abordo`] === true;
+
+            if (studentPasajero && isStudentAboard) {
+              const viajeExistente = student.viajes.find((v: Viaje) => v.id === viaje.id);
+              if (!viajeExistente) {
+                student.viajes.push(viaje);
+              }
+            }
+          });
         });
-
-        console.log('Viajes activos actualizados:', viajesActivos);
+      });
     });
   }
 
@@ -149,9 +147,10 @@ export class HomeParentsPage implements OnInit {
       const pasajerosRef = collection(this.firestore, `Viaje/${viajeData.id}/Pasajeros`);
       const pasajerosSnapshot = await getDocs(pasajerosRef);
 
-      const isStudentOnTrip = pasajerosSnapshot.docs.some(pasajero => pasajero.id === student.id);
+      const studentPasajero = pasajerosSnapshot.docs.find(pasajero => pasajero.id === student.id);
+      const isStudentAboard = studentPasajero?.data()?.[`Abordo`] === true;
 
-      if (isStudentOnTrip && !viajeData.Terminado) {
+      if (studentPasajero && isStudentAboard && !viajeData.Terminado) {
         student.viajes.push(viajeData);
       }
     }

@@ -12,7 +12,8 @@
         </ion-item>
         <ion-item>
           <ion-icon name="lock-closed"></ion-icon>
-          <ion-input type="password" name="password" [(ngModel)]="password" placeholder="Contraseña"></ion-input>
+          <ion-input [type]="showPassword ? 'text' : 'password'" name="password" [(ngModel)]="password" placeholder="Contraseña"></ion-input>
+          <ion-icon slot="end" [name]="showPassword ? 'eye-outline' : 'eye-off-outline'" (click)="togglePassword()" class="password-icon"></ion-icon>
         </ion-item>
         <p class="forgot-password" [routerLink]="['/recover-password']">¿Olvidaste tu contraseña?</p>
         <ion-button expand="block" type="submit" class="login-button">Iniciar sesión</ion-button>
