@@ -17,20 +17,24 @@ import { Firestore, doc, getDoc } from '@angular/fire/firestore';
   imports: [IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, IonButton, IonIcon, RouterModule]
 })
 export class StudentParentsPage implements OnInit {
-  studentInfo: any = {}; // Para almacenar la información del estudiante
-  defaultImage: string = 'assets/img/avatar-default.png'; // Imagen por defecto
+  // Propiedades para almacenar la información del estudiante y la imagen por defecto
+  studentInfo: any = {};
+  defaultImage: string = 'assets/img/avatar-default.png';
 
   constructor(private route: ActivatedRoute, private firestore: Firestore, private location: Location, private router: Router) {
+    // Inicializa los iconos necesarios para la página
     addIcons({arrowBackOutline,locationOutline,logoWhatsapp,qrCodeOutline});
   }
 
+  // Función que se ejecuta al iniciar la página, obtiene el ID del estudiante de la URL
   ngOnInit() {
     this.route.params.subscribe(params => {
-      const studentId = params['id']; // Obtiene el ID del estudiante de la ruta
+      const studentId = params['id'];
       this.loadStudentInfo(studentId);
     });
   }
 
+  // Función para cargar toda la información del estudiante desde Firestore
   async loadStudentInfo(studentId: string) {
     const studentDocRef = doc(this.firestore, `Alumnos/${studentId}`);
     
@@ -40,7 +44,7 @@ export class StudentParentsPage implements OnInit {
       if (studentDocSnapshot.exists()) {
         this.studentInfo = { id: studentDocSnapshot.id, ...studentDocSnapshot.data() };
 
-        // Load school info
+        // Carga la información del colegio
         const schoolId = this.studentInfo.FK_ALColegio;
         if (schoolId) {
           const schoolDocRef = doc(this.firestore, `Colegio/${schoolId}`);
@@ -51,7 +55,7 @@ export class StudentParentsPage implements OnInit {
           }
         }
 
-        // Load parent info
+        // Carga la información del apoderado
         const parentId = this.studentInfo.FK_ALApoderado;
         if (parentId) {
           const parentDocRef = doc(this.firestore, `Apoderado/${parentId}`);
@@ -71,10 +75,12 @@ export class StudentParentsPage implements OnInit {
     }
   }
 
+  // Función para volver a la página anterior
   goBack() {
-    this.location.back(); // Método para volver a la página anterior
+    this.location.back();
   }
 
+  // Función para abrir WhatsApp con el número de teléfono proporcionado
   openWhatsApp(telefono: string) {
     if (telefono) {
       const url = `https://wa.me/${telefono}`;
@@ -82,6 +88,7 @@ export class StudentParentsPage implements OnInit {
     }
   }
 
+  // Función para ver el código QR del estudiante
   viewStudentQR(studentRut: string) {
     this.router.navigate(['/student-qr'], {
       queryParams: {

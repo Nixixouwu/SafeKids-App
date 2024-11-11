@@ -20,6 +20,7 @@ import { RouterModule } from '@angular/router';
   imports: [IonicModule, CommonModule, RouterModule]
 })
 export class MapsPage implements OnInit, OnDestroy {
+  // Propiedades para el mapa y marcadores
   map!: L.Map;
   driverMarker!: L.Marker;
   driverInfo: any = {};
@@ -32,6 +33,7 @@ export class MapsPage implements OnInit, OnDestroy {
     addIcons(allIcons);
   }
 
+  // Función que se ejecuta al iniciar la página
   ngOnInit() {
     this.route.params.subscribe(params => {
       this.driverId = params['id'];
@@ -42,6 +44,7 @@ export class MapsPage implements OnInit, OnDestroy {
     this.listenToDriverLocation();
   }
 
+  // Función para cargar la información del conductor desde Firestore
   async loadDriverInfo(driverId: string) {
     const driverDocRef = doc(this.firestore, `Conductor/${driverId}`);
     try {
@@ -62,6 +65,7 @@ export class MapsPage implements OnInit, OnDestroy {
     }
   }
 
+  // Función para cargar la información del viaje actual
   async loadViajeInfo(viajeId: string) {
     const viajeDocRef = doc(this.firestore, `Viaje/${viajeId}`);
     try {
@@ -79,6 +83,7 @@ export class MapsPage implements OnInit, OnDestroy {
     }
   }
 
+  // Función para cargar la información de los estudiantes en el viaje
   async loadStudentInfo(viajeId: string) {
     const pasajerosRef = collection(this.firestore, `Viaje/${viajeId}/Pasajeros`);
     const querySnapshot = await getDocs(pasajerosRef);
@@ -104,6 +109,7 @@ export class MapsPage implements OnInit, OnDestroy {
     }
   }
 
+  // Función que se ejecuta al destruir el componente
   ngOnDestroy() {
     const driverLocationRef = ref(this.database, `Users/${this.driverId}/Coords`);
     off(driverLocationRef);
@@ -112,6 +118,7 @@ export class MapsPage implements OnInit, OnDestroy {
     }
   }
 
+  // Función para inicializar el mapa
   async initMap() {
     await this.waitForDom();
     this.map = L.map('map').fitWorld();
@@ -121,6 +128,7 @@ export class MapsPage implements OnInit, OnDestroy {
     await this.centerOnUser(true);
   }
 
+  // Función para centrar el mapa en la ubicación del usuario
   async centerOnUser(centerMap: boolean = false) {
     try {
       const coordinates = await Geolocation.getCurrentPosition();
@@ -143,6 +151,7 @@ export class MapsPage implements OnInit, OnDestroy {
     }
   }
 
+  // Función para esperar a que el DOM esté listo
   async waitForDom() {
     return new Promise<void>((resolve) => {
       const checkExist = setInterval(() => {
@@ -155,6 +164,7 @@ export class MapsPage implements OnInit, OnDestroy {
     });
   }
 
+  // Función para escuchar la ubicación del conductor en tiempo real
   listenToDriverLocation() {
     const driverLocationRef = ref(this.database, `Users/${this.driverId}/Coords`);
     onValue(driverLocationRef, (snapshot: DataSnapshot) => {
@@ -165,6 +175,7 @@ export class MapsPage implements OnInit, OnDestroy {
     });
   }
 
+  // Función para actualizar el marcador del conductor en el mapa
   updateDriverMarker(latitude: number, longitude: number) {
     const latLng = L.latLng(latitude, longitude);
     if (!this.driverMarker) {
@@ -175,10 +186,13 @@ export class MapsPage implements OnInit, OnDestroy {
     this.map.setView(latLng, 15);
   }
 
+  // Función para centrar el mapa
   centerMap() {
-    this.centerOnUser(true); // Llama a la función que centra el mapa en la ubicación actual
+    this.centerOnUser(true);
   }
+
+  // Función para volver a la página anterior
   goBack() {
-    this.location.back(); // Método para volver a la página anterior
+    this.location.back();
   }
 }

@@ -17,6 +17,7 @@ import * as QRCode from 'qrcode';
   imports: [IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, IonButton, IonIcon, RouterModule]
 })
 export class StudentQrPage implements OnInit {
+    // Propiedades para almacenar la información del estudiante, URL del QR, etc.
   studentInfo: any = {};
   qrCodeUrl: string = '';
   defaultImage: string = 'assets/img/avatar-default.png';
@@ -31,6 +32,7 @@ export class StudentQrPage implements OnInit {
     addIcons({arrowBackOutline,checkmarkCircleOutline});
   }
 
+  // Inicializa la página y obtiene los parámetros de la URL (ID del estudiante, si está escaneando, ID del viaje)
   ngOnInit() {
     this.route.queryParams.subscribe(params => {
       console.log('Received query params:', params);
@@ -44,6 +46,7 @@ export class StudentQrPage implements OnInit {
     });
   }
 
+  // Carga la información del estudiante desde Firestore usando su ID
   async loadStudentInfo(studentId: string) {
     try {
       console.log('Loading student info for ID:', studentId);
@@ -63,6 +66,7 @@ export class StudentQrPage implements OnInit {
     }
   }
 
+  // Genera el código QR usando el RUT del estudiante
   async generateQR(studentId: string) {
     try {
       console.log('Student Info in generateQR:', this.studentInfo);
@@ -87,6 +91,7 @@ export class StudentQrPage implements OnInit {
     }
   }
 
+  // Permite descargar el código QR como imagen PNG
   downloadQR() {
     if (this.qrCodeUrl) {
       const link = document.createElement('a');
@@ -98,10 +103,12 @@ export class StudentQrPage implements OnInit {
     }
   }
 
+  // Navega a la página anterior
   goBack() {
     this.location.back();
   }
 
+  // Actualiza el estado del estudiante a "Abordo" en el viaje actual
   async updateStudentStatus(studentRut: string) {
     try {
       const pasajeroRef = doc(this.firestore, `Viaje/${this.viajeId}/Pasajeros/${studentRut}`);

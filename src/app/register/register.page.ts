@@ -14,6 +14,7 @@ import { arrowBackOutline } from 'ionicons/icons';
 })
 export class RegisterPage implements OnInit {
 
+  // Propiedades para almacenar los datos del formulario de registro
   rut: string = '';
   nombreCompleto: string = '';
   instituto: string = '';
@@ -21,26 +22,31 @@ export class RegisterPage implements OnInit {
   email: string = '';
   password: string = '';
 
+  // Función que maneja el envío del formulario de registro
   onSubmit() {
-    // Handle login logic here
+    // Lógica para manejar el registro aquí
     console.log('Register submitted', this.rut, this.nombreCompleto, this.instituto, this.telefono, this.email, this.password);
   }
 
   constructor() { 
+    // Inicializa los iconos necesarios para la página
     addIcons({ arrowBackOutline });
   }
 
+  // Función del ciclo de vida que se ejecuta al iniciar la página
   ngOnInit() {
   }
 
+  // Función que valida y formatea la entrada del número de teléfono
+  // Solo permite números y elimina cualquier otro carácter
   onTelefonoInput(event: any) {
     const input = event.target as HTMLInputElement;
     const value = input.value;
     
-    // Remove any non-numeric characters
+    // Elimina cualquier carácter que no sea número
     const numericValue = value.replace(/[^0-9]/g, '');
     
-    // Update the input value if it has changed
+    // Actualiza el valor del input si ha cambiado
     if (value !== numericValue) {
       input.value = numericValue;
       this.telefono = numericValue;

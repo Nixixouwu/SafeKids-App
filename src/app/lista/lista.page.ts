@@ -17,6 +17,7 @@ import { BarcodeScanner } from '@capacitor-mlkit/barcode-scanning';
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class ListaPage implements OnInit {
+  // Propiedades para almacenar la lista de pasajeros y el ID del viaje
   pasajeros: any[] = [];
   viajeId: string = '';
 
@@ -26,9 +27,11 @@ export class ListaPage implements OnInit {
     private location: Location,
     private route: ActivatedRoute
   ) {
+    // Inicializa todos los iconos disponibles
     addIcons(allIcons);
   }
 
+  // Función que se ejecuta al iniciar la página
   ngOnInit() {
     this.route.params.subscribe(params => {
       this.viajeId = params['viajeId'];
@@ -36,6 +39,7 @@ export class ListaPage implements OnInit {
     });
   }
 
+  // Función para cargar la lista de pasajeros del viaje actual
   async loadPasajeros() {
     if (!this.viajeId) {
       console.error('El ID del viaje no está definido.');
@@ -46,43 +50,43 @@ export class ListaPage implements OnInit {
     this.pasajeros = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
   }
 
+  // Función para navegar a la página de detalles del estudiante
   goToStudent(studentId: string) {
     this.router.navigate(['/student-parents', studentId]);
   }
 
+  // Función para finalizar el viaje actual
   detenerViaje() {
     const viajeRef = doc(this.firestore, `Viaje/${this.viajeId}`);
-    setDoc(viajeRef, { Terminado: true }, { merge: true }); // Cambia el estado a true
-    this.location.back(); // Retrocede a la página anterior
+    setDoc(viajeRef, { Terminado: true }, { merge: true });
+    this.location.back();
   }
 
+  // Función para actualizar el estado de abordaje del estudiante
   async updateStudentStatus(studentRut: string) {
     try {
-      // Find the passenger document in the current trip
       const pasajeroRef = doc(this.firestore, `Viaje/${this.viajeId}/Pasajeros/${studentRut}`);
-      
-      // Update Abordo to true
       await updateDoc(pasajeroRef, {
         Abordo: true
       });
-
       console.log(`Estado del estudiante ${studentRut} actualizado a 'Abordo': true`);
     } catch (error) {
       console.error('Error updating student status:', error);
-      throw error; // Propagate error to handle it in the scanning function
+      throw error;
     }
   }
 
+  // Función para escanear el código QR del estudiante
   async scanStudentQR() {
     try {
-      // Check if scanner is supported
+      // Verifica si el escáner es compatible
       const { supported } = await BarcodeScanner.isSupported();
       if (!supported) {
         alert('El escáner de códigos QR no está soportado en este dispositivo');
         return;
       }
 
-      // Check and install Google Barcode Scanner Module if needed
+      // Verifica e instala el módulo de Google Barcode Scanner si es necesario
       const { available } = await BarcodeScanner.isGoogleBarcodeScannerModuleAvailable();
       if (!available) {
         alert('Instalando el módulo de escaneo QR...');
@@ -91,10 +95,10 @@ export class ListaPage implements OnInit {
         return;
       }
 
-      // Request camera permission
+      // Solicita permisos de cámara
       await BarcodeScanner.requestPermissions();
       
-      // Start scanning
+      // Inicia el escaneo
       const result = await BarcodeScanner.scan();
       
       if (result.barcodes.length > 0) {
@@ -114,13 +118,10 @@ export class ListaPage implements OnInit {
     } catch (err: unknown) {
       console.error('Error scanning QR:', err);
       
-      // Type guard to check if error is an object with message property
       if (err && typeof err === 'object' && 'message' in err) {
         const error = err as { message: string };
         
-        // Check if the error is due to user cancellation
         if (error.message.includes('User cancelled')) {
-          // Don't show any message when user cancels
           return;
         } else if (error.message.includes('installation')) {
           alert('Error en la instalación del módulo QR. Por favor, inténtelo de nuevo');
@@ -133,13 +134,13 @@ export class ListaPage implements OnInit {
     }
   }
 
-  // Optional: Stop scanning when leaving the page
+  // Función que se ejecuta al salir de la página para detener el escaneo
   ionViewWillLeave() {
     BarcodeScanner.stopScan();
   }
 
+  // Función privada para agregar un estudiante al viaje (pendiente de implementar)
   private async addStudentToTrip(studentId: string, studentData: any) {
-    // Your existing logic to add student to trip
-    // This would update the lista/trip data in your database
+    // Lógica para agregar estudiante al viaje
   }
 }

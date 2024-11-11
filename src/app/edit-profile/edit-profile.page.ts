@@ -40,13 +40,14 @@ import { Storage, ref, uploadString, getDownloadURL } from '@angular/fire/storag
   ]
 })
 export class EditProfilePage implements OnInit {
+  // Propiedades para almacenar la información del usuario y estados de la página
   userId: string = '';
   currentPassword: string = '';
   newPassword: string = '';
   confirmPassword: string = '';
   imageUrl: string = 'assets/img/avatar-default.png';
   userInfo: any;
-  userType: 'Conductor' | 'Apoderado' = 'Apoderado'; // Default to Apoderado
+  userType: 'Conductor' | 'Apoderado' = 'Apoderado'; // Por defecto es Apoderado
   showCurrentPassword: boolean = false;
   showNewPassword: boolean = false;
   showConfirmPassword: boolean = false;
@@ -58,6 +59,7 @@ export class EditProfilePage implements OnInit {
     private route: ActivatedRoute,
     private router: Router
   ) {
+    // Inicializa los iconos necesarios para la página
     addIcons({
       arrowBackOutline,
       cameraOutline,
@@ -70,13 +72,14 @@ export class EditProfilePage implements OnInit {
     });
   }
 
+  // Función que se ejecuta al iniciar la página
   ngOnInit() {
     this.route.params.subscribe(params => {
       this.userId = params['id'];
-      // First try to load as Conductor
+      // Primero intenta cargar como Conductor
       this.loadUserInfo('Conductor').then(exists => {
         if (!exists) {
-          // If not found as Conductor, try Apoderado
+          // Si no se encuentra como Conductor, intenta como Apoderado
           this.userType = 'Apoderado';
           this.loadUserInfo('Apoderado');
         }
@@ -84,6 +87,7 @@ export class EditProfilePage implements OnInit {
     });
   }
 
+  // Función para cargar la información del usuario desde Firestore
   async loadUserInfo(collection: 'Conductor' | 'Apoderado'): Promise<boolean> {
     const userDocRef = doc(this.firestore, `${collection}/${this.userId}`);
     try {
@@ -101,6 +105,7 @@ export class EditProfilePage implements OnInit {
     }
   }
 
+  // Función para actualizar la contraseña del usuario
   async updatePassword() {
     if (this.newPassword !== this.confirmPassword) {
       alert('Las contraseñas no coinciden');
@@ -118,6 +123,7 @@ export class EditProfilePage implements OnInit {
     }
   }
 
+  // Función para seleccionar una nueva imagen de perfil
   async selectImage() {
     try {
       const image = await Camera.getPhoto({
@@ -136,9 +142,10 @@ export class EditProfilePage implements OnInit {
     }
   }
 
+  // Función para subir la imagen seleccionada a Firebase Storage
   async uploadImage(dataUrl: string) {
     try {
-      // Create a reference to the correct folder based on user type
+      // Crea una referencia a la carpeta correcta según el tipo de usuario
       const folder = this.userType === 'Apoderado' ? 'apoderados' : 'conductores';
       const storageRef = ref(this.storage, `${folder}/${this.userId}/${new Date().getTime()}_${Math.random().toString(36).substring(7)}.jpg`);
       
@@ -157,11 +164,13 @@ export class EditProfilePage implements OnInit {
     }
   }
 
+  // Función para volver a la página anterior
   goBack() {
     const route = this.userType === 'Conductor' ? '/driver' : '/home-parents';
     this.router.navigate([route, this.userId]);
   }
 
+  // Funciones para mostrar/ocultar contraseñas
   toggleCurrentPassword() {
     this.showCurrentPassword = !this.showCurrentPassword;
   }

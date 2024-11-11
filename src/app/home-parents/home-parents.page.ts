@@ -10,6 +10,7 @@ import { AuthService } from '../services/auth.service';
 import { Firestore, doc, getDoc, collection, query, getDocs, where, onSnapshot } from '@angular/fire/firestore';
 import { ActivatedRoute } from '@angular/router';
 
+// Interfaz para definir la estructura de un viaje
 interface Viaje {
   id: string;
   FK_VIBus: string;
@@ -28,6 +29,7 @@ interface Viaje {
   imports: [IonIcon, IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, IonButton, RouterModule]
 })
 export class HomeParentsPage implements OnInit {
+  // Propiedades para almacenar la información del apoderado
   parentImageUrl: string = 'assets/img/avatar-default.png';
   parentInfo: any = { estudiantes: [] };
 
@@ -35,6 +37,7 @@ export class HomeParentsPage implements OnInit {
     addIcons({bus, arrowBackOutline});
   }
 
+  // Función que se ejecuta al iniciar la página
   ngOnInit() {
     this.route.params.subscribe(params => {
       const userId = params['id'];
@@ -44,6 +47,7 @@ export class HomeParentsPage implements OnInit {
     });
   }
 
+  // Función para cargar la información del apoderado desde Firestore
   async loadParentInfo(userId: string) {
     const parentDocRef = doc(this.firestore, `Apoderado/${userId}`);
     
@@ -66,6 +70,7 @@ export class HomeParentsPage implements OnInit {
     }
   }
 
+  // Función para cargar los estudiantes asociados al apoderado
   async loadStudentsByParentId(parentId: string) {
     const studentsRef = collection(this.firestore, 'Alumnos');
     const q = query(studentsRef, where('FK_ALApoderado', '==', parentId));
@@ -89,6 +94,7 @@ export class HomeParentsPage implements OnInit {
     }
   }
 
+  // Función para cargar los viajes de un estudiante específico
   async loadViajesForStudent(student: any) {
     const viajesRef = collection(this.firestore, `Viaje`);
     const viajesSnapshot = await getDocs(viajesRef);
@@ -113,6 +119,7 @@ export class HomeParentsPage implements OnInit {
     }
   }
 
+  // Función para suscribirse a los cambios en los viajes activos
   subscribeToViajes() {
     const viajesRef = collection(this.firestore, 'Viaje');
     onSnapshot(viajesRef, (snapshot) => {
@@ -120,6 +127,7 @@ export class HomeParentsPage implements OnInit {
         .map(doc => ({ id: doc.id, ...doc.data() } as Viaje))
         .filter(viaje => !viaje.Terminado);
 
+      // Actualiza los viajes de cada estudiante
       this.parentInfo.estudiantes.forEach((student: any) => {
         student.viajes = [];
         viajesActivos.forEach(viaje => {
@@ -140,6 +148,7 @@ export class HomeParentsPage implements OnInit {
     });
   }
 
+  // Función para actualizar los viajes de todos los estudiantes
   async updateViajesForStudents(viajeDoc: any) {
     const viajeData = { id: viajeDoc.id, ...viajeDoc.data() } as Viaje;
 
@@ -156,6 +165,7 @@ export class HomeParentsPage implements OnInit {
     }
   }
 
+  // Función para suscribirse a los cambios en la lista de estudiantes
   subscribeToEstudiantes(parentId: string) {
     const studentsRef = collection(this.firestore, 'Alumnos');
     const q = query(studentsRef, where('FK_ALApoderado', '==', parentId));
@@ -169,6 +179,7 @@ export class HomeParentsPage implements OnInit {
     });
   }
 
+  // Función para editar la imagen del perfil usando la cámara
   async editImage() {
     console.log('editImage function called');
     try {
@@ -191,6 +202,7 @@ export class HomeParentsPage implements OnInit {
     }
   }
 
+  // Función para navegar a la página del mapa
   irAMapa(conductorId: string) {
     this.router.navigate(['/maps', conductorId]); // Redirige a la página de mapas con la ID del conductor
   }

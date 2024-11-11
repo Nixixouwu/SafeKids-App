@@ -27,6 +27,7 @@ declare const cordova: any;
   imports: [IonicModule, CommonModule, RouterModule]
 })
 export class DriverPage implements OnInit, OnDestroy {
+  // Propiedades para almacenar la información del conductor, escuela y bus
   driverInfo: any = {};
   schoolInfo: any = {};
   busInfo: any = {};
@@ -42,6 +43,7 @@ export class DriverPage implements OnInit, OnDestroy {
     private alertController: AlertController
   ) {
     this.db = database;
+    // Inicializa los iconos necesarios
     addIcons({ 
       busOutline, 
       arrowBackOutline, 
@@ -50,6 +52,7 @@ export class DriverPage implements OnInit, OnDestroy {
     });
   }
 
+  // Función que se ejecuta al iniciar la página
   ngOnInit() {
     this.route.params.subscribe(params => {
       let userId = params['id'];
@@ -68,6 +71,7 @@ export class DriverPage implements OnInit, OnDestroy {
     });
   }
 
+  // Función para cargar la información del conductor
   async loadDriverInfo(userId: string) {
     const driverDocRef = doc(this.firestore, `Conductor/${userId}`);
     
@@ -109,6 +113,7 @@ export class DriverPage implements OnInit, OnDestroy {
     }
   }
 
+  // Función para cargar la información del bus
   async loadBusInfo(busId: string) {
     const busDocRef = doc(this.firestore, `Bus/${busId}`);
     
@@ -126,6 +131,7 @@ export class DriverPage implements OnInit, OnDestroy {
     }
   }
 
+  // Función para cargar la información de la escuela
   async loadSchoolInfo(schoolId: string) {
     const schoolDocRef = doc(this.firestore, `Colegio/${schoolId}`);
     
@@ -143,6 +149,7 @@ export class DriverPage implements OnInit, OnDestroy {
     }
   }
 
+  // Función para mostrar alertas de error
   async presentErrorAlert(message: string) {
     const alert = await this.alertController.create({
       header: 'Error al iniciar viaje',
@@ -155,6 +162,7 @@ export class DriverPage implements OnInit, OnDestroy {
     await alert.present();
   }
 
+  // Función para verificar y solicitar permisos de ubicación
   async checkAndRequestLocation() {
     try {
       // First check if there's an active trip
@@ -234,6 +242,7 @@ export class DriverPage implements OnInit, OnDestroy {
     }
   }
 
+  // Función principal para iniciar un nuevo viaje
   async iniciarViaje() {
     try {
       const locationEnabled = await this.checkAndRequestLocation();
@@ -241,19 +250,18 @@ export class DriverPage implements OnInit, OnDestroy {
         return;
       }
 
-      // Verify bus assignment
+      // Verificaciones previas
       if (!this.busInfo.ID_Placa) {
         await this.presentErrorAlert('No hay un bus asignado para iniciar el viaje');
         return;
       }
 
-      // Verify school assignment
       if (!this.driverInfo.FK_COColegio) {
         await this.presentErrorAlert('No hay un colegio asignado para iniciar el viaje');
         return;
       }
 
-      // Check for existing watchId
+      // Limpiar watchId existente si hay
       if (this.watchId) {
         Geolocation.clearWatch({ id: this.watchId });
         this.watchId = null;
@@ -328,22 +336,29 @@ export class DriverPage implements OnInit, OnDestroy {
     }
   }
 
+  // Función para iniciar el seguimiento de ubicación
   async startLocationUpdates() {
     this.watchId = await Geolocation.watchPosition(
       { enableHighAccuracy: true, timeout: 1000 },
       (position) => {
         if (position) {
-          this.updateLocationInFirebase(this.driverInfo.id, position.coords.latitude, position.coords.longitude); // Se agregó el ID del conductor
+          this.updateLocationInFirebase(
+            this.driverInfo.id, 
+            position.coords.latitude, 
+            position.coords.longitude
+          );
         }
       }
     );
   }
 
+  // Función para actualizar la ubicación en Firebase
   updateLocationInFirebase(driverId: string, latitude: number, longitude: number) {
-    const driverLocationRef = ref(this.db, `Users/${driverId}/Coords`); // Usa el ID del conductor
+    const driverLocationRef = ref(this.db, `Users/${driverId}/Coords`);
     set(driverLocationRef, { Latitude: latitude, Longitude: longitude });
   }
 
+  // Función para ver el viaje actual
   async verViajeActual() {
     try {
       const viajesRef = collection(this.firestore, 'Viaje');
@@ -383,6 +398,7 @@ export class DriverPage implements OnInit, OnDestroy {
     }
   }
 
+  // Función que se ejecuta al destruir el componente
   ngOnDestroy() {
     if (this.watchId) {
       Geolocation.clearWatch({ id: this.watchId });

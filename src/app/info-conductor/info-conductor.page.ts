@@ -12,16 +12,19 @@ import { IonicModule } from '@ionic/angular';
   imports: [IonicModule]
 })
 export class InfoConductorPage implements OnInit {
+  // Propiedades para almacenar la información del conductor y su bus
   driverInfo: any = {};
   busInfo: any = {};
 
   constructor(private route: ActivatedRoute, private firestore: Firestore) {}
 
+  // Función que se ejecuta al iniciar la página
   ngOnInit() {
     const driverId = this.route.snapshot.paramMap.get('id') || '';
     this.loadDriverInfo(driverId);
   }
 
+  // Función para cargar la información del conductor y su bus asignado desde Firestore
   async loadDriverInfo(driverId: string) {
     const driverDocRef = doc(this.firestore, `Conductor/${driverId}`);
     const driverDocSnapshot = await getDoc(driverDocRef);
@@ -30,6 +33,7 @@ export class InfoConductorPage implements OnInit {
         this.driverInfo = { id: driverDocSnapshot.id, ...driverDocSnapshot.data() };
         console.log('Información del conductor:', this.driverInfo);
         
+        // Busca el bus asignado al conductor usando su RUT
         const busesRef = collection(this.firestore, 'Bus');
         const q = query(busesRef, where('FK_BUConductor', '==', this.driverInfo.RUT));
         const querySnapshot = await getDocs(q);
@@ -46,18 +50,22 @@ export class InfoConductorPage implements OnInit {
     }
   }
 
+  // Función para abrir WhatsApp con el número del conductor
   openWhatsApp(telefono: string) {
     const url = `https://wa.me/${telefono}`;
     window.open(url, '_blank');
   }
 
+  // Función para volver a la página anterior
   goBack() {
     window.history.back();
   }
 
+  // Función para descargar los antecedentes del conductor en PDF
   downloadAntecedentes() {
     const doc = new jsPDF();
 
+    // Información del conductor
     doc.setFontSize(16);
     doc.text('Información del Conductor', 10, 10);
     doc.setFontSize(12);
@@ -70,12 +78,12 @@ export class InfoConductorPage implements OnInit {
     doc.text(`RUT: ${this.driverInfo.RUT}`, 10, 80);
     doc.text(`Teléfono: ${this.driverInfo.Telefono}`, 10, 90);
 
+    // Información del bus
     doc.setFontSize(16);
     doc.text('Información del Bus', 10, 160);
     doc.setFontSize(12);
     doc.text(`Patente: ${this.busInfo.ID_Placa}`, 10, 180);
     doc.text(`Modelo: ${this.busInfo.Modelo}`, 10, 190);
-    
 
     doc.save('informacion_conductor.pdf');
   }
