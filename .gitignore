@@ -71,3 +71,5 @@ Thumbs.db
 
 # Android
 /android
+
+/mock-login-server

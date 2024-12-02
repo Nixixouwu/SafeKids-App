@@ -28,6 +28,12 @@ export class MapsPage implements OnInit, OnDestroy {
   vehiclePlate: string = '';
   updateInterval: any;
   driverId: string = '';
+  customBusIcon = L.icon({
+    iconUrl: 'assets/icon/bus.png',
+    iconSize: [60, 82],
+    iconAnchor: [30, 82],
+    popupAnchor: [0, -82]
+  });
 
   constructor(private database: Database, private firestore: Firestore, private route: ActivatedRoute, private location: Location) {
     addIcons(allIcons);
@@ -125,29 +131,33 @@ export class MapsPage implements OnInit, OnDestroy {
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '© OpenStreetMap contributors'
     }).addTo(this.map);
-    await this.centerOnUser(true);
+    await this.initializeUserLocation();
   }
 
-  // Función para centrar el mapa en la ubicación del usuario
-  async centerOnUser(centerMap: boolean = false) {
+  // Función para centrar el mapa en el conductor
+  centerMap() {
+    // Si tenemos un marcador del conductor, centramos en su posición
+    if (this.driverMarker) {
+      const driverPosition = this.driverMarker.getLatLng();
+      this.map.setView(driverPosition, 15);
+    }
+  }
+
+  // Función para inicializar la ubicación
+  async initializeUserLocation() {
     try {
       const coordinates = await Geolocation.getCurrentPosition();
       const { latitude, longitude } = coordinates.coords;
 
-      if (centerMap) {
-        this.map.setView([latitude, longitude], 13);
+      if (!this.driverMarker) {
+        this.driverMarker = L.marker([latitude, longitude], { 
+          icon: this.customBusIcon 
+        }).addTo(this.map);
       }
-
-      const customIcon = L.icon({
-        iconUrl: 'assets/icon/bus.png',
-        iconSize: [60, 82],
-        iconAnchor: [30, 82],
-        popupAnchor: [0, -82]
-      });
-
-      this.driverMarker = L.marker([latitude, longitude], { icon: customIcon }).addTo(this.map);
+      
+      this.map.setView([latitude, longitude], 13);
     } catch (error) {
-      console.error('Error al centrar el mapa en el usuario:', error);
+      console.error('Error al obtener la ubicación inicial:', error);
     }
   }
 
@@ -175,20 +185,17 @@ export class MapsPage implements OnInit, OnDestroy {
     });
   }
 
-  // Función para actualizar el marcador del conductor en el mapa
+  // Función para actualizar el marcador del conductor
   updateDriverMarker(latitude: number, longitude: number) {
     const latLng = L.latLng(latitude, longitude);
     if (!this.driverMarker) {
-      this.driverMarker = L.marker(latLng).addTo(this.map);
+      this.driverMarker = L.marker(latLng, { 
+        icon: this.customBusIcon 
+      }).addTo(this.map);
     } else {
       this.driverMarker.setLatLng(latLng);
     }
     this.map.setView(latLng, 15);
-  }
-
-  // Función para centrar el mapa
-  centerMap() {
-    this.centerOnUser(true);
   }
 
   // Función para volver a la página anterior

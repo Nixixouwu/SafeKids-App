@@ -8,7 +8,6 @@
       <img [src]="driverInfo.Imagen || 'assets/img/conductor.jpg'" alt="Foto del conductor" class="driver-photo">
       <div class="driver-details">
         <p class="driver-name">{{ driverInfo.Nombre }} {{ driverInfo.Apellido }}</p>
-        <p class="vehicle-id">{{ vehiclePlate }}</p>
         <ion-button size="small" fill="outline" [routerLink]="['/info-conductor', driverInfo.id]">IR AL PERFIL</ion-button>
       </div>
     </div>
